@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AutoMotoNews futuristic automobile website concept with EV, cars, bikes, reviews and comparisons.">
+  <title>AutoMotoNews | Drive The Future</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="site-shell">
+    <header class="site-header">
+      <a href="#" class="brand">
+        <span class="brand-badge">AMN</span>
+        <span class="brand-text">AutoMotoNews</span>
+      </a>
+      <button id="menuButton" class="menu-button" aria-label="Toggle menu">Menu</button>
+      <nav id="siteNav" class="site-nav">
+        <a href="#ev">EV News</a>
+        <a href="#cars">Cars</a>
+        <a href="#bikes">Bikes</a>
+        <a href="#compare">Compare</a>
+        <a href="#guides">Guides</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="hero-content">
+          <p class="eyebrow">Futuristic Automobile Portal</p>
+          <h1>Drive The Future Of Cars, Bikes, and EV Mobility</h1>
+          <p class="hero-subtitle">
+            Smart buying guides, lightning-fast news, real-world reviews, and deep comparisons for India’s next generation of mobility.
+          </p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#latest">Explore Latest</a>
+            <a class="btn btn-outline" href="#compare">Compare Models</a>
+          </div>
+        </div>
+        <div class="hero-card glass">
+          <h2>Quick Market Pulse</h2>
+          <ul>
+            <li><strong>EV Growth:</strong> +32% YoY demand</li>
+            <li><strong>Top Segment:</strong> Compact SUVs</li>
+            <li><strong>User Focus:</strong> Range + Value</li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="latest" class="section">
+        <div class="section-heading">
+          <h2>Breaking Auto Updates</h2>
+          <p>Fast highlights from the Indian automobile ecosystem.</p>
+        </div>
+        <div class="ticker" role="status" aria-live="polite">
+          <span id="tickerText">Loading latest updates...</span>
+        </div>
+      </section>
+
+      <section id="ev" class="section">
+        <div class="section-heading">
+          <h2>EV Spotlight</h2>
+          <p>Charging, battery health, range optimization, and latest EV launches.</p>
+        </div>
+        <div class="card-grid three">
+          <article class="news-card glass">
+            <h3>Affordable EV Cars 2026</h3>
+            <p>Top budget-friendly EV options ranked by range, warranty, and running cost.</p>
+            <a href="#">Read Story</a>
+          </article>
+          <article class="news-card glass">
+            <h3>Home Charger Cost Guide</h3>
+            <p>Understand setup, wiring, and long-term electricity savings at home.</p>
+            <a href="#">Read Story</a>
+          </article>
+          <article class="news-card glass">
+            <h3>Pune Charging Network</h3>
+            <p>A practical guide to charging locations and usage patterns in the city.</p>
+            <a href="#">Read Story</a>
+          </article>
+        </div>
+      </section>
+
+      <section id="cars" class="section">
+        <div class="section-heading">
+          <h2>Car Launches & Reviews</h2>
+          <p>From daily city drives to premium SUVs, find what fits your lifestyle.</p>
+        </div>
+        <div class="dual-feature">
+          <article class="feature-card glass">
+            <h3>Upcoming Cars This Quarter</h3>
+            <p>Pricing predictions, key specs, and launch timelines for high-interest models.</p>
+            <a class="btn btn-small" href="#">View Launch Calendar</a>
+          </article>
+          <article class="feature-card glass">
+            <h3>Review System</h3>
+            <p>Every review includes user comfort, performance, safety, efficiency, and value score.</p>
+            <a class="btn btn-small" href="#">Read Reviews</a>
+          </article>
+        </div>
+      </section>
+
+      <section id="bikes" class="section">
+        <div class="section-heading">
+          <h2>Bikes & Performance</h2>
+          <p>Commuter, sport, and electric two-wheelers with practical ownership insights.</p>
+        </div>
+        <div class="stats-row">
+          <div class="stat glass">
+            <span class="stat-value">120+</span>
+            <span class="stat-label">Bike Articles</span>
+          </div>
+          <div class="stat glass">
+            <span class="stat-value">45</span>
+            <span class="stat-label">Performance Reviews</span>
+          </div>
+          <div class="stat glass">
+            <span class="stat-value">22</span>
+            <span class="stat-label">New Launches Tracked</span>
+          </div>
+        </div>
+      </section>
+
+      <section id="compare" class="section">
+        <div class="section-heading">
+          <h2>Compare Before You Buy</h2>
+          <p>Select two models and check quick spec differences.</p>
+        </div>
+        <div class="compare-tool glass">
+          <div class="compare-controls">
+            <label for="modelA">Model A</label>
+            <select id="modelA"></select>
+            <label for="modelB">Model B</label>
+            <select id="modelB"></select>
+            <button id="compareButton" class="btn btn-primary" type="button">Compare</button>
+          </div>
+          <div id="compareResult" class="compare-result">
+            Pick two models to see price, range/mileage, and category.
+          </div>
+        </div>
+      </section>
+
+      <section id="guides" class="section">
+        <div class="section-heading">
+          <h2>Buyer Guides</h2>
+          <p>Actionable recommendations by budget and use case.</p>
+        </div>
+        <div class="card-grid four">
+          <article class="mini-card glass"><h3>Best EV Under 15L</h3></article>
+          <article class="mini-card glass"><h3>Top Family SUV Picks</h3></article>
+          <article class="mini-card glass"><h3>Mileage Kings 2026</h3></article>
+          <article class="mini-card glass"><h3>Best City Bikes</h3></article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-text">
+        <h2>AutoMotoNews</h2>
+        <p>Future-focused automobile media experience.</p>
+      </div>
+      <form id="newsletterForm" class="newsletter">
+        <label for="emailInput">Subscribe for daily auto updates</label>
+        <div class="newsletter-row">
+          <input id="emailInput" type="email" placeholder="Enter your email" required>
+          <button class="btn btn-primary" type="submit">Subscribe</button>
+        </div>
+        <p id="formMessage" class="form-message" aria-live="polite"></p>
+      </form>
+    </footer>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
