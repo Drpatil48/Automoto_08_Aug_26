@@ -1,5 +1,9 @@
-import type { Article, Author, Category, VehicleSpec } from "@/lib/types";
+import type { Article, Author, Category } from "@/lib/types";
 import { buildCategoryMeta } from "@/lib/category-style";
+import { VEHICLES } from "@/lib/vehicles";
+
+/** @deprecated Prefer `getAllVehicles()` from `@/lib/vehicles`. */
+export const MOCK_VEHICLES = VEHICLES;
 
 const author: Author = {
   name: "AutomotoNews Desk",
@@ -188,69 +192,6 @@ export const MOCK_ARTICLES: Article[] = [
     readTimeMinutes: 5,
     tags: ["Ownership Cost"],
   }),
-];
-
-export const MOCK_VEHICLES: VehicleSpec[] = [
-  {
-    id: "nexon-ev",
-    brand: "Tata",
-    model: "Nexon EV",
-    variant: "Fearless+",
-    priceRangeINR: "₹14.5–17.5 Lakh",
-    rangeKm: 465,
-    engineOrBattery: "45 kWh battery",
-    seatingCapacity: 5,
-    images: ["/placeholders/cover-ev.svg"],
-    fuelType: "electric",
-  },
-  {
-    id: "creta",
-    brand: "Hyundai",
-    model: "Creta",
-    variant: "SX (O)",
-    priceRangeINR: "₹14–20 Lakh",
-    mileageKmpl: 17.4,
-    engineOrBattery: "1.5L petrol",
-    seatingCapacity: 5,
-    images: ["/placeholders/cover-car.svg"],
-    fuelType: "petrol",
-  },
-  {
-    id: "seltos",
-    brand: "Kia",
-    model: "Seltos",
-    variant: "HTX",
-    priceRangeINR: "₹13–20 Lakh",
-    mileageKmpl: 17.0,
-    engineOrBattery: "1.5L petrol",
-    seatingCapacity: 5,
-    images: ["/placeholders/cover-car.svg"],
-    fuelType: "petrol",
-  },
-  {
-    id: "apache-rtr-160",
-    brand: "TVS",
-    model: "Apache RTR 160",
-    variant: "4V",
-    priceRangeINR: "₹1.2–1.4 Lakh",
-    mileageKmpl: 45,
-    engineOrBattery: "160cc petrol",
-    seatingCapacity: 2,
-    images: ["/placeholders/cover-bike.svg"],
-    fuelType: "petrol",
-  },
-  {
-    id: "tiago-ev",
-    brand: "Tata",
-    model: "Tiago EV",
-    variant: "XT LR",
-    priceRangeINR: "₹8–12 Lakh",
-    rangeKm: 315,
-    engineOrBattery: "24 kWh battery",
-    seatingCapacity: 5,
-    images: ["/placeholders/cover-ev.svg"],
-    fuelType: "electric",
-  },
 ];
 
 export function getFeaturedArticle(): Article {

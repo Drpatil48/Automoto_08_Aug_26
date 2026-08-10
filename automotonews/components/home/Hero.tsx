@@ -38,6 +38,7 @@ export function Hero({ article }: HeroProps) {
             alt={imageAlt}
             fill
             priority
+            fetchPriority="high"
             className="object-cover"
             sizes="(max-width: 768px) 100vw, 50vw"
           />

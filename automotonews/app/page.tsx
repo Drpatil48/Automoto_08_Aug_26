@@ -5,6 +5,7 @@ import { Hero } from "@/components/home/Hero";
 import { NewsletterForm } from "@/components/home/NewsletterForm";
 import { SectionHeading } from "@/components/home/SectionHeading";
 import { TopStories } from "@/components/home/TopStories";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { CmsStateMessage } from "@/components/ui/CmsStateMessage";
 import {
   CmsRequestError,
@@ -13,8 +14,16 @@ import {
   isCmsConfigured,
 } from "@/lib/cms";
 import { buildCategoryMeta } from "@/lib/category-style";
-import { MOCK_VEHICLES } from "@/lib/mock-data";
+import { getAllVehicles } from "@/lib/vehicles";
+import { buildBreadcrumbJsonLd, buildHomeMetadata } from "@/lib/seo";
 import type { Article, Category } from "@/lib/types";
+
+export const generateMetadata = buildHomeMetadata;
+
+/** Align page ISR with CMS fetch revalidate (lib/cms.ts). */
+export const revalidate = 300;
+
+const VEHICLES = getAllVehicles();
 
 async function loadCategoryRail(
   slug: string,
@@ -51,9 +60,9 @@ export default async function HomePage() {
         <CmsStateMessage
           tone="info"
           title="WordPress API not configured"
-          message="Phase 3 content integration is ready. Add WP_API_URL to .env.local (see .env.example), then restart the server to load live AutomotoNews content. Compare and newsletter UI remain available below."
+          message="Set WP_API_URL in .env.local (see .env.example), then restart the server to load live AutomotoNews content. Compare and newsletter UI remain available below."
         />
-        <ComparePreview vehicles={MOCK_VEHICLES} />
+        <ComparePreview vehicles={VEHICLES} />
         <NewsletterForm />
       </div>
     );
@@ -94,6 +103,9 @@ export default async function HomePage() {
 
   return (
     <>
+      <JsonLd
+        data={buildBreadcrumbJsonLd([{ name: "Home", path: "/" }])}
+      />
       {latestError ? (
         <div className="mx-auto max-w-6xl px-4 pt-8">
           <CmsStateMessage
@@ -150,7 +162,7 @@ export default async function HomePage() {
         />
       )}
 
-      <ComparePreview vehicles={MOCK_VEHICLES} />
+      <ComparePreview vehicles={VEHICLES} />
 
       {guideRail.error ? (
         <div className="mx-auto max-w-6xl px-4 py-6">

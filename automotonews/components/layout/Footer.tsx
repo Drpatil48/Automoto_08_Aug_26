@@ -2,6 +2,7 @@ import Link from "next/link";
 import {
   FOOTER_NAV,
   PRIMARY_NAV,
+  SITE_CONTACT_EMAIL,
   SITE_DESCRIPTION,
   SITE_NAME,
   SITE_TAGLINE,
@@ -21,6 +22,15 @@ export function Footer() {
             <p className="mt-1 text-sm text-white/70">{SITE_TAGLINE}</p>
             <p className="mt-3 max-w-md text-sm leading-relaxed text-white/65">
               {SITE_DESCRIPTION}
+            </p>
+            <p className="mt-3 text-sm text-white/75">
+              Contact:{" "}
+              <a
+                href={`mailto:${SITE_CONTACT_EMAIL}`}
+                className="font-medium text-white/90 underline-offset-4 hover:text-white hover:underline"
+              >
+                {SITE_CONTACT_EMAIL}
+              </a>
             </p>
           </div>
 

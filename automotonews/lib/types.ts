@@ -45,18 +45,36 @@ export type Article = {
   sourceUrl?: string;
 };
 
+export type CmsPage = {
+  id?: number;
+  title: string;
+  slug: string;
+  excerpt: string;
+  body: string;
+  publishDate: string;
+  updatedDate: string;
+  sourceUrl?: string;
+};
+
+export type VehicleFuelType = "electric" | "petrol" | "diesel" | "hybrid";
+
 export type VehicleSpec = {
   id: string;
   brand: string;
   model: string;
   variant: string;
-  priceRangeINR: string;
-  mileageKmpl?: number;
-  rangeKm?: number;
-  engineOrBattery: string;
-  seatingCapacity: number;
+  /** Null when a verified price range is unavailable. */
+  priceRangeINR: string | null;
+  /** Null when mileage is unavailable / not applicable. */
+  mileageKmpl: number | null;
+  /** Null when EV range is unavailable / not applicable. */
+  rangeKm: number | null;
+  /** Null when powertrain details are unavailable. */
+  engineOrBattery: string | null;
+  /** Null when seating capacity is unavailable. */
+  seatingCapacity: number | null;
   images: string[];
-  fuelType: "electric" | "petrol" | "diesel" | "hybrid";
+  fuelType: VehicleFuelType | null;
 };
 
 export function articleHref(article: Pick<Article, "category" | "slug">): string {

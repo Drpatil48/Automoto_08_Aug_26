@@ -37,7 +37,8 @@ export function TopStories({ articles }: TopStoriesProps) {
       />
       <div className="grid gap-4 lg:grid-cols-5">
         <div className="lg:col-span-3">
-          <ArticleCard article={lead} priority />
+          {/* Hero already owns LCP priority; avoid competing fetch priority */}
+          <ArticleCard article={lead} />
         </div>
         <div className="flex flex-col gap-3 lg:col-span-2">
           {rest.map((article) => (

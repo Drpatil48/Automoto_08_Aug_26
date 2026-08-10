@@ -1,10 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
-import { notFound, redirect } from "next/navigation";
-import { ArticleBody } from "@/components/article/ArticleBody";
+import { notFound, permanentRedirect } from "next/navigation";
+import { ArticleBodyWithAds } from "@/components/ads/ArticleBodyWithAds";
+import { SidebarAd } from "@/components/ads/SidebarAd";
 import { AuthorBio } from "@/components/article/AuthorBio";
 import { Breadcrumbs } from "@/components/article/Breadcrumbs";
 import { RelatedArticles } from "@/components/article/RelatedArticles";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { Badge } from "@/components/ui/Badge";
 import { CmsStateMessage } from "@/components/ui/CmsStateMessage";
 import {
@@ -15,11 +17,20 @@ import {
   isCmsConfigured,
 } from "@/lib/cms";
 import { buildCategoryMeta } from "@/lib/category-style";
+import {
+  buildArticleJsonLd,
+  buildArticleMetadata,
+  buildBreadcrumbJsonLd,
+  buildPageMetadata,
+} from "@/lib/seo";
 import type { Article } from "@/lib/types";
 
 type ArticlePageProps = {
   params: Promise<{ category: string; slug: string }>;
 };
+
+/** Align page ISR with CMS fetch revalidate (lib/cms.ts). */
+export const revalidate = 300;
 
 function formatDate(value: string): string {
   return new Intl.DateTimeFormat("en-IN", {
@@ -30,21 +41,31 @@ function formatDate(value: string): string {
 }
 
 export async function generateMetadata({ params }: ArticlePageProps) {
-  const { slug } = await params;
+  const { category: categorySlug, slug } = await params;
 
   if (!isCmsConfigured()) {
-    return { title: slug };
+    return buildPageMetadata({
+      title: slug,
+      path: `/${categorySlug}/${slug}`,
+    });
   }
 
   try {
     const article = await getArticleBySlug(slug);
-    if (!article) return { title: "Article not found" };
-    return {
-      title: article.title,
-      description: article.excerpt || undefined,
-    };
+    if (!article) {
+      return buildPageMetadata({
+        title: "Article not found",
+        path: `/${categorySlug}/${slug}`,
+        noIndex: true,
+      });
+    }
+    return buildArticleMetadata(article);
   } catch {
-    return { title: slug };
+    return buildPageMetadata({
+      title: slug,
+      path: `/${categorySlug}/${slug}`,
+      noIndex: true,
+    });
   }
 }
 
@@ -106,7 +127,8 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   if (!article) notFound();
 
   if (article.category !== categorySlug) {
-    redirect(`/${article.category}/${article.slug}`);
+    // Phase 8: one-hop permanent redirect to the preferred category path.
+    permanentRedirect(`/${article.category}/${article.slug}`);
   }
 
   const category = buildCategoryMeta(article.category, {
@@ -115,71 +137,94 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   const imageSrc = article.coverImage;
 
   return (
-    <article className="mx-auto max-w-3xl px-4 py-8 sm:py-10">
-      <Breadcrumbs
-        items={[
-          { label: "Home", href: "/" },
-          { label: category.name, href: category.href },
-          { label: article.title },
+    <div className="mx-auto max-w-6xl px-4 py-8 sm:py-10">
+      <JsonLd
+        data={[
+          buildBreadcrumbJsonLd([
+            { name: "Home", path: "/" },
+            { name: category.name, path: category.href },
+            {
+              name: article.title,
+              path: `/${article.category}/${article.slug}`,
+            },
+          ]),
+          buildArticleJsonLd(article),
         ]}
       />
 
-      <header className="mb-8">
-        <Badge tone={category.tone}>{category.name}</Badge>
-        <h1 className="mt-3 text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
-          {article.title}
-        </h1>
-        <p className="mt-4 text-sm text-muted">
-          {article.author.name} · {formatDate(article.publishDate)}
-          {article.updatedDate !== article.publishDate
-            ? ` · Updated ${formatDate(article.updatedDate)}`
-            : ""}
-          {" · "}
-          {article.readTimeMinutes} min read
-        </p>
-        {article.tags.length > 0 ? (
-          <ul className="mt-4 flex flex-wrap gap-2">
-            {article.tags.map((tag) => (
-              <li
-                key={tag}
-                className="rounded-md bg-background px-2 py-1 text-xs font-medium text-muted"
-              >
-                {tag}
-              </li>
-            ))}
-          </ul>
-        ) : null}
-      </header>
-
-      {imageSrc ? (
-        <div className="relative mb-8 aspect-[16/9] overflow-hidden rounded-xl bg-border">
-          <Image
-            src={imageSrc}
-            alt={article.coverImageAlt || article.title}
-            fill
-            priority
-            className="object-cover"
-            sizes="(max-width: 768px) 100vw, 768px"
+      <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_300px]">
+        <article>
+          <Breadcrumbs
+            items={[
+              { label: "Home", href: "/" },
+              { label: category.name, href: category.href },
+              { label: article.title },
+            ]}
           />
-        </div>
-      ) : null}
 
-      {article.excerpt ? (
-        <p className="mb-8 text-lg leading-relaxed text-muted">{article.excerpt}</p>
-      ) : null}
+          <header className="mb-8">
+            <Badge tone={category.tone}>{category.name}</Badge>
+            <h1 className="mt-3 text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
+              {article.title}
+            </h1>
+            <p className="mt-4 text-sm text-muted">
+              {article.author.name} · {formatDate(article.publishDate)}
+              {article.updatedDate !== article.publishDate
+                ? ` · Updated ${formatDate(article.updatedDate)}`
+                : ""}
+              {" · "}
+              {article.readTimeMinutes} min read
+            </p>
+            {article.tags.length > 0 ? (
+              <ul className="mt-4 flex flex-wrap gap-2">
+                {article.tags.map((tag) => (
+                  <li
+                    key={tag}
+                    className="rounded-md bg-background px-2 py-1 text-xs font-medium text-muted"
+                  >
+                    {tag}
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+          </header>
 
-      <ArticleBody html={article.body} />
-      <AuthorBio author={article.author} />
-      <RelatedArticles articles={related} />
+          {imageSrc ? (
+            <div className="relative mb-8 aspect-[16/9] overflow-hidden rounded-xl bg-border">
+              <Image
+                src={imageSrc}
+                alt={article.coverImageAlt || article.title}
+                fill
+                priority
+                fetchPriority="high"
+                className="object-cover"
+                sizes="(max-width: 1024px) 100vw, 768px"
+              />
+            </div>
+          ) : null}
 
-      <p className="mt-10 text-sm text-muted">
-        <Link
-          href={category.href}
-          className="font-semibold text-accent hover:text-accent-dark"
-        >
-          ← Back to {category.name}
-        </Link>
-      </p>
-    </article>
+          {article.excerpt ? (
+            <p className="mb-8 text-lg leading-relaxed text-muted">
+              {article.excerpt}
+            </p>
+          ) : null}
+
+          <ArticleBodyWithAds html={article.body} />
+          <AuthorBio author={article.author} />
+          <RelatedArticles articles={related} />
+
+          <p className="mt-10 text-sm text-muted">
+            <Link
+              href={category.href}
+              className="font-semibold text-accent hover:text-accent-dark"
+            >
+              ← Back to {category.name}
+            </Link>
+          </p>
+        </article>
+
+        <SidebarAd />
+      </div>
+    </div>
   );
 }

@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { SidebarAd } from "@/components/ads/SidebarAd";
 import { ArticleCard } from "@/components/article/ArticleCard";
 import { Breadcrumbs } from "@/components/article/Breadcrumbs";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { CmsStateMessage } from "@/components/ui/CmsStateMessage";
 import { Badge } from "@/components/ui/Badge";
 import {
@@ -12,6 +14,11 @@ import {
   isCmsConfigured,
 } from "@/lib/cms";
 import { buildCategoryMeta } from "@/lib/category-style";
+import {
+  buildBreadcrumbJsonLd,
+  buildCategoryMetadata,
+  buildPageMetadata,
+} from "@/lib/seo";
 import type { Article, Category } from "@/lib/types";
 
 type CategoryPageProps = {
@@ -19,24 +26,40 @@ type CategoryPageProps = {
   searchParams: Promise<{ page?: string }>;
 };
 
-export async function generateMetadata({ params }: CategoryPageProps) {
+/** Align page ISR with CMS fetch revalidate (lib/cms.ts). */
+export const revalidate = 300;
+
+export async function generateMetadata({
+  params,
+  searchParams,
+}: CategoryPageProps) {
   const { category: categorySlug } = await params;
+  const query = await searchParams;
+  const page = Math.max(1, Number(query.page ?? "1") || 1);
 
   if (!isCmsConfigured()) {
-    return { title: categorySlug };
+    return buildPageMetadata({
+      title: categorySlug,
+      path: `/${categorySlug}`,
+    });
   }
 
   try {
     const category = await getCategoryBySlug(categorySlug);
-    if (!category) return { title: "Category not found" };
-    return {
-      title: category.name,
-      description:
-        category.description ||
-        `${category.name} news and updates from AutomotoNews.in`,
-    };
+    if (!category) {
+      return buildPageMetadata({
+        title: "Category not found",
+        path: `/${categorySlug}`,
+        noIndex: true,
+      });
+    }
+    return buildCategoryMetadata(category, page);
   } catch {
-    return { title: categorySlug };
+    return buildPageMetadata({
+      title: categorySlug,
+      path: `/${categorySlug}`,
+      noIndex: true,
+    });
   }
 }
 
@@ -114,6 +137,12 @@ export default async function CategoryPage({
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 sm:py-10">
+      <JsonLd
+        data={buildBreadcrumbJsonLd([
+          { name: "Home", path: "/" },
+          { name: styled.name, path: styled.href },
+        ])}
+      />
       <Breadcrumbs
         items={[{ label: "Home", href: "/" }, { label: styled.name }]}
       />
@@ -131,50 +160,60 @@ export default async function CategoryPage({
         <p className="mt-2 text-sm text-muted">{total} articles</p>
       </header>
 
-      {articles.length === 0 ? (
-        <CmsStateMessage
-          tone="empty"
-          title="No articles yet"
-          message="This category exists, but no published posts were returned from WordPress."
-        />
-      ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {articles.map((article) => (
-            <ArticleCard key={article.slug} article={article} />
-          ))}
-        </div>
-      )}
+      <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_300px]">
+        <div>
+          {articles.length === 0 ? (
+            <CmsStateMessage
+              tone="empty"
+              title="No articles yet"
+              message="This category exists, but no published posts were returned from WordPress."
+            />
+          ) : (
+            <div className="grid gap-4 sm:grid-cols-2">
+              {articles.map((article, index) => (
+                <ArticleCard
+                  key={article.slug}
+                  article={article}
+                  priority={index === 0}
+                />
+              ))}
+            </div>
+          )}
 
-      {totalPages > 1 ? (
-        <nav
-          className="mt-10 flex items-center justify-between gap-4"
-          aria-label="Category pagination"
-        >
-          {page > 1 ? (
-            <Link
-              href={`/${category.slug}?page=${page - 1}`}
-              className="inline-flex min-h-11 items-center rounded-md border border-border bg-surface px-4 text-sm font-semibold hover:bg-background"
+          {totalPages > 1 ? (
+            <nav
+              className="mt-10 flex items-center justify-between gap-4"
+              aria-label="Category pagination"
             >
-              Previous
-            </Link>
-          ) : (
-            <span />
-          )}
-          <p className="text-sm text-muted">
-            Page {page} of {totalPages}
-          </p>
-          {page < totalPages ? (
-            <Link
-              href={`/${category.slug}?page=${page + 1}`}
-              className="inline-flex min-h-11 items-center rounded-md border border-border bg-surface px-4 text-sm font-semibold hover:bg-background"
-            >
-              Next
-            </Link>
-          ) : (
-            <span />
-          )}
-        </nav>
-      ) : null}
+              {page > 1 ? (
+                <Link
+                  href={`/${category.slug}?page=${page - 1}`}
+                  className="inline-flex min-h-11 items-center rounded-md border border-border bg-surface px-4 text-sm font-semibold hover:bg-background"
+                >
+                  Previous
+                </Link>
+              ) : (
+                <span />
+              )}
+              <p className="text-sm text-muted">
+                Page {page} of {totalPages}
+              </p>
+              {page < totalPages ? (
+                <Link
+                  href={`/${category.slug}?page=${page + 1}`}
+                  className="inline-flex min-h-11 items-center rounded-md border border-border bg-surface px-4 text-sm font-semibold hover:bg-background"
+                >
+                  Next
+                </Link>
+              ) : (
+                <span />
+              )}
+            </nav>
+          ) : null}
+        </div>
+
+        <SidebarAd />
+      </div>
     </div>
   );
 }

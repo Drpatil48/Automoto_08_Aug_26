@@ -1,5 +1,6 @@
 import { buildCategoryMeta } from "@/lib/category-style";
-import type { Article, Author, Category, CategorySlug } from "@/lib/types";
+import { SITE_CONTACT_EMAIL } from "@/lib/constants";
+import type { Article, Author, Category, CmsPage } from "@/lib/types";
 
 const DEFAULT_AUTHOR: Author = {
   name: "AutomotoNews Desk",
@@ -43,6 +44,7 @@ export type WpPost = {
   title?: WpRendered;
   excerpt?: WpRendered;
   content?: WpRendered;
+  categories?: number[];
   featured_media?: number;
   _embedded?: {
     author?: WpUser[];
@@ -81,9 +83,31 @@ export function stripHtml(value: string): string {
     .trim();
 }
 
+/**
+ * Contact Form 7 markup cannot submit from the headless Next.js front-end.
+ * Replace it with an honest notice so readers do not see a broken form.
+ */
+function replaceNonFunctionalWpForms(html: string): string {
+  if (!/\bwpcf7\b/i.test(html)) return html;
+
+  const mailto = `mailto:${SITE_CONTACT_EMAIL}`;
+  const notice =
+    '<aside class="cms-form-notice" role="note">' +
+    "<p>The WordPress contact form plugin does not work on this headless front-end. " +
+    `Please email us at <a href="${mailto}">${SITE_CONTACT_EMAIL}</a> — we monitor that inbox.</p>` +
+    "</aside>";
+
+  return html
+    .replace(
+      /<div[^>]*\bclass="[^"]*\bwpcf7\b[^"]*"[^>]*>[\s\S]*?<\/form>[\s\S]*?<\/div>/gi,
+      notice,
+    )
+    .replace(/<form[^>]*\bwpcf7-form\b[^>]*>[\s\S]*?<\/form>/gi, notice);
+}
+
 /** Remove executable markup while keeping editorial HTML structure. */
 export function sanitizeWpHtml(html: string): string {
-  return html
+  return replaceNonFunctionalWpForms(html)
     .replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, "")
     .replace(/<iframe[\s\S]*?>[\s\S]*?<\/iframe>/gi, "")
     .replace(/\son\w+="[^"]*"/gi, "")
@@ -191,6 +215,39 @@ export function normalizeArticle(post: WpPost): Article | null {
   };
 }
 
-export function getCategoryMeta(slug: CategorySlug): Category {
+export type WpPage = {
+  id?: number;
+  slug?: string;
+  date?: string;
+  modified?: string;
+  link?: string;
+  title?: WpRendered;
+  excerpt?: WpRendered;
+  content?: WpRendered;
+};
+
+export function normalizePage(page: WpPage): CmsPage | null {
+  const slug = page.slug?.trim();
+  if (!slug) return null;
+
+  const title = stripHtml(page.title?.rendered ?? "");
+  if (!title) return null;
+
+  const bodyHtml = sanitizeWpHtml(page.content?.rendered ?? "");
+  const excerpt = stripHtml(page.excerpt?.rendered ?? "");
+
+  return {
+    id: page.id,
+    title,
+    slug,
+    excerpt,
+    body: bodyHtml,
+    publishDate: page.date ?? new Date(0).toISOString(),
+    updatedDate: page.modified ?? page.date ?? new Date(0).toISOString(),
+    sourceUrl: page.link,
+  };
+}
+
+export function getCategoryMeta(slug: string): Category {
   return buildCategoryMeta(slug);
 }

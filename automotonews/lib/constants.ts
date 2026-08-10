@@ -4,6 +4,9 @@ export const SITE_TAGLINE =
 export const SITE_DESCRIPTION =
   "Maharashtra and India automotive news: electric vehicles, car launches, bike reviews, and buying guides in Marathi.";
 
+/** Public editorial contact — owner-provided; used for mailto / displayed email. */
+export const SITE_CONTACT_EMAIL = "contact@automotonews.in";
+
 export type NavItem = {
   label: string;
   href: string;
