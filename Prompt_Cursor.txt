@@ -1,0 +1,642 @@
+
+
+
+Phase 1 Prompt
+
+
+Read `PLAN.md` and `.cursor/rules/automotonews.mdc`.
+
+Build **Phase 1 — Scaffold**.
+
+Inspect the existing repository before making changes.
+
+Implement Phase 1 only:
+
+* Next.js App Router foundation
+* TypeScript
+* Tailwind CSS
+* root layout
+* global styling
+* header
+* footer
+* navigation
+* mobile navigation foundation
+* basic responsive layout
+* required project directories
+* basic reusable UI foundation
+
+Follow the architecture specified in PLAN.md.
+
+Do not implement later phases.
+
+Do not connect WordPress yet.
+Do not implement AdSense yet.
+Do not implement the vehicle comparison tool yet.
+Do not implement search yet.
+Do not perform content migration.
+
+Preserve existing functionality whenever possible.
+
+After implementation:
+
+1. Run TypeScript checks.
+2. Run lint.
+3. Run production build.
+4. Fix errors introduced by this phase.
+5. Verify the application runs.
+6. Report using the Phase Completion Report from the Cursor rules.
+
+Do not claim completion if the build fails.
+
+
+--------------------------------------------------------------------------------------------
+
+Phase 2 Prompt
+
+
+
+Read `PLAN.md` and `.cursor/rules/automotonews.mdc`.
+
+Build **Phase 2 — Homepage**.
+
+Preserve everything successfully implemented in Phase 1.
+
+Build the homepage using static/mock data.
+
+Implement:
+
+* Hero / featured story
+* Top Stories
+* EV Spotlight
+* Bikes & Performance
+* Compare Before You Buy UI
+* Latest Guides
+* Newsletter signup UI
+* article cards
+* category badges
+* responsive grids
+* mobile layout
+* desktop layout
+* appropriate loading/skeleton foundations where useful
+
+Focus heavily on visual quality, Marathi/Devanagari typography, mobile usability, spacing, hierarchy, and performance.
+
+Do not connect the WordPress API yet.
+
+Do not implement the full comparison functionality yet.
+
+Do not implement AdSense yet.
+
+Do not implement search yet.
+
+Do not perform migration or redirects.
+
+Mock data must be clearly separated from production CMS data.
+
+After implementation:
+
+* TypeScript
+* lint
+* production build
+* affected route verification
+
+Fix errors and report using the Phase Completion Report.
+
+
+------------------------------------------------------------------------------------------------------------
+
+
+Phase 3 Prompt
+
+Read `PLAN.md` and `.cursor/rules/automotonews.mdc`.
+
+Build **Phase 3 — Content Integration**.
+
+Preserve all previous phases.
+
+The preferred content architecture is headless WordPress.
+
+Connect the Next.js application to the existing WordPress REST API.
+
+Implement:
+
+* `lib/cms.ts`
+* `lib/types.ts`
+* WordPress API configuration
+* Article type normalization
+* Category type normalization
+* Author type normalization
+* Featured image handling
+* Article body handling
+* Excerpt handling
+* Publish date
+* Updated date
+* Tags
+* Category data
+* Dynamic category pages
+* Dynamic article pages
+* Loading states
+* Empty states
+* API error handling
+* Not-found handling
+
+Use Server Components wherever practical.
+
+Do not expose private WordPress credentials to the browser.
+
+Do not delete or modify WordPress content.
+
+Do not perform large-scale URL migration yet.
+
+Use the real WordPress API if the required environment configuration is available.
+
+If configuration is missing, create the correct environment-variable structure and clearly report what is needed instead of inventing credentials.
+
+After implementation:
+
+* verify real API responses where possible
+* TypeScript
+* lint
+* production build
+* test representative category/article routes
+
+Report using the Phase Completion Report.
+
+
+------------------------------------------------------------------------------------------------------------
+
+Phase 4 Prompt
+
+
+Read `PLAN.md` and `.cursor/rules/automotonews.mdc`.
+
+Build **Phase 4 — SEO Layer**.
+
+Preserve all previous phases.
+
+Implement the SEO system for:
+
+* homepage
+* category pages
+* article pages
+* static pages
+* search where appropriate
+
+Implement:
+
+* unique page titles
+* meta descriptions
+* canonical URLs
+* Open Graph
+* Twitter/X metadata
+* Article/NewsArticle JSON-LD where appropriate
+* BreadcrumbList JSON-LD
+* Organization JSON-LD
+* WebSite JSON-LD
+* sitemap.ts
+* robots.ts
+
+Use real data from the application.
+
+Do not invent author information, dates, publisher information, article information, ratings, or other structured data.
+
+Ensure canonical URLs match the actual production URL strategy.
+
+Verify:
+
+* homepage metadata
+* category metadata
+* article metadata
+* canonical URLs
+* JSON-LD
+* sitemap
+* robots.txt
+
+Run TypeScript, lint, build, and relevant route checks.
+
+Fix errors.
+
+Report using the Phase Completion Report.
+
+
+
+----------------------------------------------------------------------------------------------------
+
+
+Phase 5 Prompt
+
+
+Read `PLAN.md` and `.cursor/rules/automotonews.mdc`.
+
+Build **Phase 5 — AdSense Infrastructure**.
+
+Preserve all previous phases.
+
+Implement:
+
+* `public/ads.txt`
+* AdSlot component
+* AdSense script architecture
+* environment configuration for publisher/client ID
+* below-header ad slot
+* in-article ad slots
+* desktop sidebar ad slot where appropriate
+* mobile ad placement where appropriate
+* reserved dimensions for ad containers
+* layout-stable ad components
+
+Important:
+
+Do not invent an AdSense publisher ID.
+
+Do not use fake production credentials.
+
+Do not encourage clicks.
+
+Do not disguise ads as navigation or editorial content.
+
+Do not overload pages with advertisements.
+
+If the AdSense publisher ID is not available, implement the integration safely using an environment variable and clearly document the required configuration.
+
+Ensure ad containers reserve appropriate space so they do not unnecessarily cause CLS.
+
+Do not claim AdSense is live unless it has actually been configured and verified.
+
+Run:
+
+* TypeScript
+* lint
+* production build
+* affected route verification
+
+Report using the Phase Completion Report.
+
+
+
+-------------------------------------------------------------------------------------------
+
+Phase 6 Prompt
+
+
+Read `PLAN.md` and `.cursor/rules/automotonews.mdc`.
+
+Build **Phase 6 — Vehicle Comparison and Search**.
+
+Preserve all previous phases.
+
+## Vehicle Comparison
+
+Implement:
+
+* vehicle data model
+* vehicle dataset
+* vehicle selector
+* two-vehicle comparison
+* price comparison
+* mileage/range comparison
+* engine/battery comparison
+* seating comparison
+* vehicle images
+* responsive specification table
+* compare tray
+* links to `/compare`
+
+Use reusable components.
+
+Do not duplicate comparison UI for individual vehicles.
+
+Do not invent vehicle specifications.
+
+If a specification is unavailable, display an appropriate unavailable state.
+
+## Search
+
+Implement:
+
+* `/search`
+* search input
+* article title search
+* tag search
+* category search
+* excerpt search where appropriate
+* result cards
+* empty state
+* no-results state
+* responsive search UI
+
+Keep search lightweight for the current content volume.
+
+Do not introduce an external search service unless necessary.
+
+After implementation:
+
+* TypeScript
+* lint
+* production build
+* manually verify comparison
+* manually verify search
+* test mobile layouts
+
+Fix errors and report using the Phase Completion Report.
+
+
+
+
+--------------------------------------------------------------------------------------------------
+
+Phase 7 Prompt
+
+Read `PLAN.md` and `.cursor/rules/automotonews.mdc`.
+
+Build **Phase 7 — Performance Pass**.
+
+Do not add major new features.
+
+Audit the entire application built so far.
+
+Focus on:
+
+* Core Web Vitals
+* LCP
+* INP
+* CLS
+* image optimization
+* next/image configuration
+* image dimensions
+* responsive image sizes
+* font loading
+* JavaScript bundle size
+* Client Components
+* Server Components
+* third-party scripts
+* AdSense loading
+* lazy loading
+* caching
+* rendering strategy
+* mobile performance
+* accessibility
+
+Find unnecessary client-side JavaScript.
+
+Move logic to Server Components where appropriate.
+
+Optimize fonts without damaging Marathi rendering.
+
+Make sure advertisements and images do not cause unnecessary layout shifts.
+
+Do not perform unnecessary architectural rewrites.
+
+Run:
+
+* TypeScript
+* lint
+* production build
+* appropriate Lighthouse/performance checks if available
+
+Fix performance problems discovered during the audit.
+
+Report:
+
+* problems found
+* fixes made
+* performance results
+* remaining issues
+
+Use the Phase Completion Report.
+
+
+------------------------------------------------------------------------------------
+
+Phase 8 Prompt
+
+Read `PLAN.md` and `.cursor/rules/automotonews.mdc`.
+
+Build **Phase 8 — Content Migration and Redirects**.
+
+This is an SEO-sensitive phase.
+
+Before changing anything, inspect the existing WordPress URL structure.
+
+Determine:
+
+* current article URL pattern
+* category URL pattern
+* important existing URLs
+* current slugs
+* current canonical patterns
+* likely old-to-new URL mappings
+
+Preserve existing URLs where practical.
+
+If URL changes are necessary, implement appropriate 301 redirects.
+
+Requirements:
+
+* no redirect chains
+* no unnecessary redirects
+* no invented mappings
+* no deleted WordPress content
+* correct canonical destinations
+* sitemap should contain the preferred new URLs
+* representative old URLs should redirect correctly
+
+First document the migration/redirect strategy.
+
+Do not perform destructive WordPress operations.
+
+Do not bulk-change production data.
+
+Test representative old URLs.
+
+Run:
+
+* TypeScript
+* lint
+* production build
+* redirect verification
+* sitemap verification
+* canonical verification
+
+Report all important URL mappings and any decisions requiring human review.
+
+Use the Phase Completion Report.
+
+
+
+----------------------------------------------------------------------------------------
+
+
+Phase 9 Prompt
+
+
+Read `PLAN.md` and `.cursor/rules/automotonews.mdc`.
+
+Build **Phase 9 — QA and Launch Preparation**.
+
+This is the final pre-launch audit.
+
+Do not make irreversible production changes or deploy without explicit approval.
+
+Audit the complete AutomotoNews application.
+
+Verify:
+
+## Pages
+
+* homepage
+* category pages
+* article pages
+* compare
+* search
+* About Us
+* Privacy Policy
+* Disclaimer
+* Contact
+* 404
+
+## SEO
+
+* metadata
+* canonical URLs
+* Open Graph
+* Twitter/X metadata
+* JSON-LD
+* breadcrumbs
+* sitemap
+* robots.txt
+* internal links
+
+## Content
+
+* WordPress API
+* article rendering
+* categories
+* authors
+* dates
+* images
+* related content
+
+## AdSense
+
+* ads.txt
+* AdSlot components
+* publisher configuration
+* reserved ad space
+* ad placement
+* no misleading placements
+
+## Forms
+
+* newsletter
+* contact
+* validation
+* success states
+* failure states
+
+## Mobile
+
+Test responsive layouts carefully.
+
+Check:
+
+* navigation
+* typography
+* article reading
+* cards
+* comparison table
+* search
+* forms
+* ads
+
+## Performance
+
+Check:
+
+* LCP
+* INP
+* CLS
+* image loading
+* fonts
+* JavaScript
+* third-party scripts
+
+## Accessibility
+
+Check:
+
+* keyboard navigation
+* focus states
+* headings
+* labels
+* contrast
+* alt text
+* touch targets
+
+## Production Readiness
+
+Search the project for:
+
+* YOUR_CHANNEL_HERE
+* YOUR_PACE_HERE
+* fake phone numbers
+* fake emails
+* fake social links
+* fake credentials
+* placeholder production URLs
+* debug code
+* unnecessary console logs
+
+Check environment variables and configuration.
+
+Do not invent missing real-world values.
+
+Create a final launch checklist with four categories:
+
+1. READY
+2. CONFIGURATION REQUIRED
+3. CONTENT/EDITORIAL WORK REQUIRED
+4. MANUAL VERIFICATION REQUIRED
+
+Run:
+
+* TypeScript
+* lint
+* production build
+* tests if available
+* route checks
+* redirect checks
+* metadata checks
+
+Fix problems that can safely be fixed.
+
+Do not claim the website is ready for production if critical issues remain.
+
+Use the Phase Completion Report.
+
+
+--------------------------------------------------------------------------------------------
+
+
+
+
+Scema 
+
+
+
+automotonews/
+│
+├── PLAN.md
+│
+├── .cursor/
+│   └── rules/
+│       └── automotonews.mdc
+│
+├── app/
+├── components/
+├── lib/
+├── public/
+└── package.json
+
+
+

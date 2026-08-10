@@ -1,0 +1,756 @@
+---
+description: AutomotoNews.in engineering execution rules — phased Next.js build guided by PLAN.md
+alwaysApply: true
+---
+
+# AutomotoNews.in — Cursor Development Rules
+
+## Project
+
+You are the senior full-stack engineer responsible for building AutomotoNews.in.
+
+The complete product specification is in:
+
+`PLAN.md`
+
+Treat `PLAN.md` as the primary product specification and this file as the engineering execution rules.
+
+The website is a Marathi-first automotive news platform covering cars, bikes, EVs, launches, comparisons, guides, and automotive technology.
+
+---
+
+# 1. DEVELOPMENT PHILOSOPHY
+
+Build the application in controlled phases.
+
+NEVER implement the entire PLAN.md at once.
+
+Only implement the phase explicitly requested by the user.
+
+If the user says:
+
+`Build Phase 1`
+
+implement Phase 1 only.
+
+Do not silently implement Phase 2, 3, 4, etc.
+
+If a later phase requires a tiny foundation in the current phase, create only the minimum required foundation and mention it in the completion report.
+
+---
+
+# 2. BEFORE EVERY PHASE
+
+Before writing code:
+
+1. Read PLAN.md.
+2. Read this rules file.
+3. Inspect the existing repository.
+4. Inspect package.json.
+5. Inspect the existing app structure.
+6. Inspect components.
+7. Inspect lib.
+8. Inspect public.
+9. Inspect configuration files.
+10. Check whether previous phases are already implemented.
+
+Never assume the repository is empty.
+
+Never overwrite working code without understanding it.
+
+Preserve existing functionality whenever possible.
+
+---
+
+# 3. EXISTING WORDPRESS SITE
+
+The existing AutomotoNews.in site contains valuable published content.
+
+Treat existing WordPress content and URLs as important SEO assets.
+
+Do not:
+
+* delete WordPress content
+* bulk-edit WordPress content
+* invent article URLs
+* invent article data
+* invent authors
+* invent publication dates
+* invent social accounts
+* invent contact information
+* invent AdSense credentials
+
+The preferred architecture is:
+
+WordPress
+→ REST API
+→ Next.js
+→ AutomotoNews.in
+
+unless the project owner explicitly chooses MDX instead.
+
+---
+
+# 4. TECHNOLOGY
+
+Use the architecture specified by PLAN.md.
+
+Preferred stack:
+
+* Next.js App Router
+* TypeScript
+* React
+* Tailwind CSS
+* Server Components by default
+* Client Components only where interactivity requires them
+* next/image
+* semantic HTML
+* accessible components
+* mobile-first responsive design
+
+Before installing major dependencies, inspect the current project and use versions compatible with the current Next.js/React ecosystem.
+
+Do not blindly downgrade or force obsolete package versions just because PLAN.md contains an older version number.
+
+Avoid unnecessary dependencies.
+
+---
+
+# 5. CODE QUALITY
+
+Write production-quality code.
+
+Rules:
+
+* TypeScript strictness should be maintained.
+* Avoid `any`.
+* Avoid duplicated logic.
+* Prefer reusable components.
+* Use meaningful names.
+* Keep components focused.
+* Keep business logic out of presentation components where practical.
+* Keep API logic centralized.
+* Handle errors.
+* Handle loading states.
+* Handle empty states.
+* Handle not-found states.
+* Do not leave debugging code.
+* Do not leave console errors.
+* Do not leave fake production functionality.
+
+Do not perform unrelated refactoring.
+
+---
+
+# 6. SECURITY
+
+Never expose secrets.
+
+Never commit:
+
+* API keys
+* API secrets
+* WordPress credentials
+* email service credentials
+* private tokens
+* database credentials
+
+Use environment variables.
+
+Public variables should only be used when the value is intentionally public.
+
+If a required credential is unavailable, use a documented environment variable placeholder.
+
+NEVER invent a real credential.
+
+---
+
+# 7. WORDPRESS API
+
+When WordPress integration is implemented:
+
+Create a clean CMS abstraction.
+
+Prefer:
+
+`lib/cms.ts`
+
+The rest of the application should not contain scattered WordPress API requests.
+
+Normalize WordPress responses into application-specific TypeScript types.
+
+Handle:
+
+* missing featured images
+* missing authors
+* missing categories
+* missing excerpts
+* malformed content
+* API errors
+* empty results
+* not-found articles
+* pagination
+
+Do not expose private WordPress credentials to the browser.
+
+---
+
+# 8. CONTENT MODEL
+
+Use strongly typed models.
+
+At minimum support:
+
+Article:
+
+* title
+* slug
+* category
+* tags
+* coverImage
+* excerpt
+* body
+* author
+* publishDate
+* updatedDate
+* readTimeMinutes
+
+Category:
+
+* name
+* slug
+* description
+* styling information where appropriate
+
+Author:
+
+* name
+* bio
+* avatarUrl
+* socialLinks
+
+VehicleSpec:
+
+* brand
+* model
+* variant
+* priceRangeINR
+* mileageKmpl
+* rangeKm
+* engineOrBattery
+* seatingCapacity
+* images
+
+Do not fabricate missing factual vehicle specifications.
+
+---
+
+# 9. MARATHI-FIRST DESIGN
+
+The primary audience is Marathi-speaking automotive readers.
+
+Design for Devanagari first.
+
+Use a proper Devanagari-compatible font.
+
+Ensure:
+
+* Marathi headlines wrap correctly.
+* Long Marathi words do not break the layout.
+* Article body text is comfortable to read.
+* Buttons remain usable with longer Marathi labels.
+* Navigation works on small screens.
+* Font loading does not unnecessarily hurt LCP.
+
+Do not design only for English and assume Marathi will work automatically.
+
+---
+
+# 10. MOBILE-FIRST
+
+Most visitors are expected to use mobile devices.
+
+Every feature must be designed mobile-first.
+
+Priorities:
+
+1. readability
+2. navigation
+3. performance
+4. touch usability
+5. accessibility
+6. desktop enhancement
+
+Use appropriate touch target sizes.
+
+Avoid hover-only functionality.
+
+Avoid unnecessary animations.
+
+---
+
+# 11. UI CONSISTENCY
+
+Create reusable UI primitives where useful.
+
+Examples:
+
+* Button
+* Badge
+* Skeleton
+* ArticleCard
+* SectionHeading
+* Breadcrumbs
+* ShareButtons
+* AdSlot
+
+Do not create multiple visually different buttons for the same purpose.
+
+Maintain a consistent visual system.
+
+Use category colors consistently.
+
+Example:
+
+EV → green
+
+Bikes → orange
+
+Do not overuse colors.
+
+---
+
+# 12. IMAGES
+
+Use `next/image` for application images wherever appropriate.
+
+Provide:
+
+* width/height or stable dimensions
+* meaningful alt text
+* appropriate responsive sizing
+* lazy loading for below-the-fold images where appropriate
+
+Do not load huge images unnecessarily.
+
+Do not use random external image URLs.
+
+Do not use copyrighted images without appropriate rights.
+
+---
+
+# 13. PERFORMANCE
+
+Performance is a first-class requirement.
+
+Prefer:
+
+* Server Components
+* static rendering where appropriate
+* caching
+* optimized images
+* responsive images
+* optimized fonts
+* minimal client JavaScript
+* lazy loading
+* stable layout dimensions
+
+Avoid unnecessary:
+
+* client-side state
+* third-party scripts
+* large dependencies
+* hydration
+* animations
+
+Target excellent mobile Core Web Vitals.
+
+Important goals:
+
+LCP < approximately 2.5 seconds
+
+INP < approximately 200ms
+
+CLS < approximately 0.1
+
+These are targets, not guarantees.
+
+---
+
+# 14. SEO
+
+SEO must be considered throughout development.
+
+Where applicable implement:
+
+* unique title
+* meta description
+* canonical URL
+* Open Graph
+* Twitter/X metadata
+* sitemap
+* robots
+* structured data
+* breadcrumbs
+* semantic headings
+* internal links
+* image alt text
+
+Do not generate misleading schema.
+
+Only use NewsArticle structured data when the content qualifies.
+
+Do not duplicate canonical URLs incorrectly.
+
+---
+
+# 15. STRUCTURED DATA
+
+Potential structured data includes:
+
+* Organization
+* WebSite
+* BreadcrumbList
+* Article
+* NewsArticle
+
+Use JSON-LD.
+
+Generate structured data from actual page data.
+
+Never invent:
+
+* author names
+* dates
+* publisher information
+* ratings
+* prices
+
+---
+
+# 16. ADSENSE
+
+AdSense is a monetization layer, not the primary design goal.
+
+Never:
+
+* encourage ad clicks
+* disguise ads as navigation
+* create fake buttons
+* place ads in misleading locations
+* overload articles with ads
+* use fake publisher IDs
+
+Reserve layout space for ads to minimize CLS.
+
+Create reusable AdSlot components.
+
+If the publisher ID is unavailable, use an environment variable/configuration placeholder.
+
+Never invent a publisher ID.
+
+AdSense approval cannot be guaranteed by code.
+
+---
+
+# 17. NEWSLETTER
+
+The newsletter must eventually connect to a real provider.
+
+Potential providers include:
+
+* Brevo
+* Mailchimp
+* another legitimate email service
+
+Do not invent API credentials.
+
+If credentials are missing:
+
+* create the integration architecture
+* use environment variables
+* provide a clear setup requirement
+
+Do not claim the newsletter works until it has been verified.
+
+---
+
+# 18. SEARCH
+
+For the current content volume, lightweight search is acceptable.
+
+Search can initially match:
+
+* title
+* tags
+* category
+* excerpt
+
+Do not introduce Elasticsearch or a hosted search service unless scale requires it.
+
+---
+
+# 19. VEHICLE COMPARISON
+
+The comparison system should be data-driven.
+
+Do not hardcode comparison UI separately for each vehicle.
+
+Use reusable:
+
+* vehicle selector
+* comparison table
+* vehicle card
+* compare tray
+
+Vehicle data should live in an appropriate data module.
+
+Do not invent vehicle specifications.
+
+If a specification is unavailable, show an appropriate unavailable state rather than false data.
+
+---
+
+# 20. ACCESSIBILITY
+
+Use:
+
+* semantic HTML
+* proper heading hierarchy
+* labels
+* keyboard navigation
+* focus states
+* alt text
+* accessible buttons
+* sufficient contrast
+* appropriate ARIA only where necessary
+
+Do not use ARIA to compensate for poor HTML.
+
+---
+
+# 21. ERROR HANDLING
+
+Every external data source must have reasonable failure handling.
+
+For WordPress:
+
+* loading
+* error
+* empty
+* not found
+
+For newsletter:
+
+* loading
+* success
+* failure
+* validation
+
+For search:
+
+* empty query
+* no results
+* results
+
+For compare:
+
+* no vehicles
+* one vehicle
+* two vehicles
+* invalid vehicle
+
+---
+
+# 22. ROUTING
+
+Protect the existing URL structure as much as possible.
+
+Before changing URL structures:
+
+1. inspect current URLs
+2. identify important existing URLs
+3. document mappings
+4. implement redirects carefully
+
+Do not create redirect chains.
+
+Do not randomly rename routes.
+
+---
+
+# 23. REDIRECTS
+
+Redirect work belongs primarily to Phase 8.
+
+Do not perform mass redirects during early phases.
+
+When Phase 8 is requested:
+
+* inspect old URL patterns
+* map old → new
+* use 301 redirects
+* test representative URLs
+* avoid chains
+* preserve SEO value
+
+Never invent redirects without evidence.
+
+---
+
+# 24. TESTING
+
+After each phase:
+
+Run, where available:
+
+* TypeScript
+* lint
+* production build
+* tests
+
+Also manually verify affected routes.
+
+Fix errors introduced by the current phase.
+
+If an unrelated pre-existing error remains, report it clearly.
+
+Never hide errors.
+
+---
+
+# 25. NO PLACEHOLDERS IN PRODUCTION
+
+Temporary placeholders are acceptable during development when clearly marked.
+
+Do not leave:
+
+* YOUR_CHANNEL_HERE
+* YOUR_PACE_HERE
+* fake WhatsApp numbers
+* fake emails
+* fake social URLs
+* fake publisher IDs
+* fake API credentials
+
+in the final launch version.
+
+If real values are unavailable, use environment configuration and clearly report what remains.
+
+---
+
+# 26. NO FAKE CONTENT
+
+Do not generate fake:
+
+* news
+* authors
+* reviews
+* vehicle prices
+* specifications
+* quotes
+* statistics
+* testimonials
+
+Mock data is acceptable only when PLAN.md explicitly requests mock/static data, such as Phase 2.
+
+Clearly separate mock data from production content.
+
+---
+
+# 27. PHASE CONTROL
+
+Never jump ahead.
+
+Phase order:
+
+1. Scaffold
+2. Homepage
+3. Content Integration
+4. SEO
+5. Ads
+6. Compare + Search
+7. Performance
+8. Migration + Redirects
+9. QA + Launch
+
+Implement only the requested phase.
+
+---
+
+# 28. IRREVERSIBLE ACTIONS
+
+Before any potentially destructive operation:
+
+* deleting data
+* bulk modifying files
+* changing production content
+* changing WordPress content
+* mass URL redirects
+* deployment
+* database migration
+
+stop and request confirmation unless the user explicitly authorized that exact action.
+
+---
+
+# 29. PHASE COMPLETION REPORT
+
+At the end of every phase, report:
+
+## Phase Completed
+
+What was implemented.
+
+## Files Created
+
+List files.
+
+## Files Modified
+
+List files.
+
+## Implemented
+
+Bullet list.
+
+## Verification
+
+* TypeScript:
+* Lint:
+* Build:
+* Tests:
+* Manual verification:
+
+## Issues / Decisions
+
+List anything requiring attention.
+
+## Configuration Required
+
+List missing environment variables, credentials, or manual setup.
+
+## Next Phase
+
+Name the next phase.
+
+Do not claim something works unless it was actually verified.
+
+---
+
+# 30. IMPORTANT FINAL RULE
+
+Do not optimize for writing lots of code.
+
+Optimize for:
+
+* correctness
+* maintainability
+* performance
+* SEO
+* accessibility
+* mobile usability
+* security
+* compatibility with existing content
+
+Build the smallest correct implementation for the current phase.

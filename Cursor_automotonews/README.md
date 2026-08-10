@@ -1,31 +1,33 @@
 # Cursor_automotonews
 
-This project includes:
+WordPress theme project for [automotonews.in](https://automotonews.in/).
 
-1. A static prototype (`index.html`, `styles.css`, `script.js`)
-2. A complete WordPress theme package (`automotonews-future/`)
+## Keep (active)
 
-## WordPress Theme Install (recommended)
+| Path | Purpose |
+|---|---|
+| `Automoto_5_May_Final/` | Current theme source (v3.0.10) |
+| `Automoto_5_May_Final-folder-v3.0.10-cards.zip` | Latest installable theme package |
+| `Design_Plan_03_08_26/` | Plans, audits, Cursor rules, AdSense/SEO docs |
+| `UI_UX_Enhancement_Roadmap.md` | UI/UX roadmap |
+| `README.md` | This file |
 
-1. Zip the `automotonews-future` folder.
-2. In WordPress Admin, go to `Appearance > Themes > Add New > Upload Theme`.
-3. Upload the zip and activate `AutoMotoNews Future`.
-4. Go to `Settings > Reading` and set your homepage to a static page.
-5. Create a page named `Home` and set it as the homepage.
-6. Create categories with these slugs for auto-population:
-   - `ev-news`
-   - `car-news`
-   - `bike-news`
-   - `buying-guide`
-7. Go to `Appearance > Menus`, create a Primary menu, and assign it to `Primary Menu`.
+## Workspace root docs
 
-## Included Theme Features
+- `../PLAN.md` — Next.js rebuild plan
+- `../CURSOR_RULES.md` — Cursor build instructions
 
-- Futuristic dark UI with neon accents
-- Responsive layout for desktop and mobile
-- Dynamic homepage sections with WordPress post queries
-- Breaking updates ticker
-- EV/Cars/Bikes content blocks
-- Interactive compare tool (client-side)
-- Newsletter UI section
-- Single post and archive templates
+## Backup
+
+Unwanted prototypes and old stacks are in `backup_data/`:
+
+- static `index.html` / `styles.css` / `script.js`
+- `fullstack-auto/` (Node/Express)
+- `automotonews-future/` (older theme)
+- `Git-Clone/`
+- older theme zips (`v3.0.7`–`v3.0.9`)
+
+## Install theme
+
+1. Upload the latest zip (currently `Automoto_5_May_Final-folder-v3.0.10-cards.zip`) in WordPress Admin → Appearance → Themes → Add New → Upload.
+2. Or zip the `Automoto_5_May_Final` folder after local edits and upload that.
