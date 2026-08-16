@@ -640,3 +640,44 @@ automotonews/
 
 
 
+
+------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+NEXT_PUBLIC_SITE_URL (e.g. https://automotonews.in)
+WP_API_URL (if different from live)
+AdSense 3. NEXT_PUBLIC_ADSENSE_CLIENT_ID (ca-pub-…) 4. Slot IDs you want live (header / sidebar / in-article / mobile anchor — only if you have them)
+
+Analytics 5. NEXT_PUBLIC_GA_ID (G-…)
+
+Newsletter 6. Provider (Brevo / Mailchimp / other) 7. API key / list or audience ID (I’ll put these in .env / .env.example placeholders only — never commit secrets)
+
+Contact 8. Public contact email (and whether Contact page should use mailto, a form endpoint, or stay WP-sourced)
+
+Optional 9. Hosting target (Vercel / Hostinger / other) — config only; no deploy unless you explicitly approve 10. Anything else from CONTENT/EDITORIAL (real WhatsApp, social URLs) if you want those cleaned up too
+
+
+
+
+
+
+
+
+NEXT_PUBLIC_SITE_URL : https://automotonews.in
+WP_API_URL=https://cms.automotonews.in/wp-json/wp/v2
+
+
+
+
+
+
+
+
+
+
