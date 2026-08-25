@@ -1,8 +1,10 @@
 import { AdSlot } from "@/components/ads/AdSlot";
-import { reservedMinHeight } from "@/lib/ads";
+import { canRenderLiveAd, reservedMinHeight } from "@/lib/ads";
 
 /** Below-header display unit — reserved height to limit CLS. */
 export function HeaderAd() {
+  if (!canRenderLiveAd("header")) return null;
+
   const minHeight = reservedMinHeight("banner");
 
   return (

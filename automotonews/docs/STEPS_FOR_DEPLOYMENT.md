@@ -1,17 +1,24 @@
 # Steps for Deployment
 
 **Project:** AutomotoNews.in (Next.js App Router)  
-**Status:** Guidance only — **do not deploy or change DNS without owner approval.**  
-**Related docs:** [`PHASE8_REDIRECTS.md`](./PHASE8_REDIRECTS.md) · [`PHASE9_LAUNCH_CHECKLIST.md`](./PHASE9_LAUNCH_CHECKLIST.md)
+**Status (2026-08-12):** Apex cutover live — https://automotonews.in serves Next.js on Vercel; WordPress on `cms.automotonews.in` (57 posts via symlink). Full day record: [`CUTOVER_LOG_2026-08-12.md`](./CUTOVER_LOG_2026-08-12.md).  
+**Open:** `www` A → `76.76.21.21`; WP `home`/`siteurl` → cms.  
+**Related docs:** [`CUTOVER_LOG_2026-08-12.md`](./CUTOVER_LOG_2026-08-12.md) · [`CMS_SUBDOMAIN_ISSUE.md`](./CMS_SUBDOMAIN_ISSUE.md) · [`PHASE8_REDIRECTS.md`](./PHASE8_REDIRECTS.md) · [`PHASE9_LAUNCH_CHECKLIST.md`](./PHASE9_LAUNCH_CHECKLIST.md)
 
 ---
 
 ## Owner approval required
 
-- [ ] **Do not deploy** the Next.js app to production without explicit owner approval.
-- [ ] **Do not change DNS** for `automotonews.in` / `www` without explicit owner approval.
-- [ ] **Do not delete WordPress** — WordPress remains the CMS, API source, and media host after cutover.
-- [ ] Do not invent credentials (AdSense, GA4, newsletter keys, WP admin passwords).
+- [x] **Deploy** — Production on Vercel (`automoto/automotonews` / `https://automotonews.vercel.app`).
+- [x] **DNS cutover (apex `@`)** — A → `76.76.21.21`; HTTPS Next.js verified 2026-08-12.
+- [ ] **DNS `www`** — add/confirm A → `76.76.21.21` (missing when last checked).
+- [x] **CMS subdomain DNS + SSL** — `cms.automotonews.in` on Hostinger (ALIAS/CDN kept).
+- [x] **CMS content** — same WordPress as main install (`x-wp-total: 57`) via `public_html/cms` → `.` symlink.
+- [x] **Vercel rewrites** — `/wp-*` → `https://cms.automotonews.in` (`vercel.json` + env).
+- [x] **`WP_API_URL` / `WORDPRESS_ORIGIN`** — Production set to cms (2026-08-12 deploy).
+- [ ] **WP `home` / `siteurl`** — must be `https://cms.automotonews.in` (admin still 302 → apex login).
+- [x] **Do not delete WordPress** — WordPress remains the CMS, API source, and media host after cutover.
+- [x] Do not invent credentials (AdSense, GA4, newsletter keys, WP admin passwords).
 
 ---
 
@@ -19,18 +26,19 @@
 
 | Role | System | Notes |
 |------|--------|--------|
-| Public website | **Next.js** (recommended: Vercel) | Serves pages, SEO, redirects, compare, search |
-| CMS / content editing | **WordPress** (Hostinger or current host) | Editors continue to publish in WP admin |
-| Content API | **WordPress REST API** | Next fetches via `WP_API_URL` |
-| Media / uploads | **WordPress** `wp-content/uploads` | Must stay publicly reachable; Next `next/image` allowlists the WP host |
+| Public website | **Next.js** on Vercel | Serves pages, SEO, redirects, compare, search |
+| CMS / content editing | **WordPress** on `cms.automotonews.in` | Editors use WP admin on the cms host |
+| Content API | **WordPress REST API** | Next fetches via `WP_API_URL` → cms |
+| Media / uploads | **WordPress** `wp-content/uploads` | Public via cms host; apex paths rewritten to cms after DNS flip |
 
 ```
-Editors → WordPress (admin + media)
+Editors → WordPress (cms.automotonews.in)
                 ↓ REST API
-Visitors → Next.js (public site) → renders articles from WP
+Visitors → Next.js (automotonews.in on Vercel)
+                ↓ rewrites /wp-* → cms
 ```
 
-WordPress is **not** removed. After DNS points the apex domain at Next, keep WP reachable for `/wp-json/`, `/wp-admin/`, and `/wp-content/uploads/` (subdomain, same host path, or reverse-proxy rules — owner/hosting decision).
+WordPress is **not** removed.
 
 ---
 
@@ -57,7 +65,7 @@ Set for **Production** (and Preview if you want WP-backed previews):
 | Variable | Value / guidance |
 |----------|------------------|
 | `NEXT_PUBLIC_SITE_URL` | `https://automotonews.in` |
-| `WP_API_URL` | `https://automotonews.in/wp-json/wp/v2` |
+| `WP_API_URL` | `https://cms.automotonews.in/wp-json/wp/v2` |
 
 **Optional — leave empty / unset until real IDs exist** (placeholders stay in UI; do not invent values):
 
@@ -71,18 +79,17 @@ Set for **Production** (and Preview if you want WP-backed previews):
 
 See `.env.example` for the full list. Never commit `.env.local` or live secrets.
 
-### 2.4 Deploy a Preview first
+### 2.4 Deploy
 
-- [ ] Trigger a Preview deployment (PR or branch deploy).
-- [ ] Note the `*.vercel.app` URL.
-- [ ] Run the [preview testing checklist](#3-preview-testing-checklist) against that URL.
-- [ ] Only after owner approval: promote to Production and proceed to [domain / DNS cutover](#4-domain--dns-cutover).
+- [x] Production deploy after cms gate (rewrites + cms `WP_API_URL`).
+- [ ] Smoke `https://automotonews.vercel.app` before flipping apex DNS.
+- [ ] Only after smoke OK: owner flips apex/`www` DNS (see §4).
 
 ---
 
 ## 3. Preview testing checklist
 
-Test on the Vercel Preview URL (or Production **after** cutover). Prefer HTTPS.
+Test on the Vercel Preview / Production URL (or apex **after** cutover). Prefer HTTPS.
 
 ### Core routes
 
@@ -119,15 +126,54 @@ Full launch QA: [`PHASE9_LAUNCH_CHECKLIST.md`](./PHASE9_LAUNCH_CHECKLIST.md).
 
 **Only with owner approval.**
 
-1. In Vercel: add domain `automotonews.in` (and `www` if used).
-2. At the DNS provider (often Hostinger): set the records Vercel shows (typically A / CNAME — follow Vercel’s current UI exactly).
-3. Avoid redirect chains (e.g. apex → www → Vercel → another host). Prefer one clean hop.
-4. After DNS propagates:
-   - [ ] Apex and `www` resolve to Next
-   - [ ] WordPress API still answers at the configured `WP_API_URL`
-   - [ ] Media URLs under `wp-content/uploads` still load in articles
-   - [ ] Re-run the preview checklist on `https://automotonews.in`
-5. Post-cutover (human): submit sitemap in Google Search Console; monitor coverage for flat URLs → 301s.
+### Cutover status (2026-08-12)
+
+| Item | Status |
+|------|--------|
+| Vercel project | `automoto/automotonews` — production deploy `dpl_Bp69Ua1wx1mupLJqDX41DfThzHD3` |
+| Domains on Vercel | `automotonews.in` + `www.automotonews.in` attached |
+| `cms.automotonews.in` | **57 posts** via symlink; Hostinger ALIAS/CDN kept |
+| Vercel rewrites | `vercel.json` → `https://cms.automotonews.in` for `/wp-*` |
+| `WP_API_URL` / `WORDPRESS_ORIGIN` | Production → cms |
+| Apex `@` DNS | **A `76.76.21.21`** — HTTPS Next.js verified |
+| `www` DNS | **Pending confirm** A → `76.76.21.21` |
+| WP siteurl/home | **Pending** → `https://cms.automotonews.in` |
+| Day log | [`CUTOVER_LOG_2026-08-12.md`](./CUTOVER_LOG_2026-08-12.md) |
+
+### Exact Hostinger DNS (hPanel → Domains → DNS for `automotonews.in`)
+
+Prefer **keeping Hostinger nameservers** and only changing records (preserves Hostinger email MX).
+
+| Type | Name / host | Value | Action |
+|------|-------------|-------|--------|
+| **A** | `@` (apex) | `76.76.21.21` | **Done** (deleted conflicting ALIAS `@` → Hostinger CDN first) |
+| **A** | `www` | `76.76.21.21` | **Confirm** (remove Hostinger CDN CNAME if present) |
+| **ALIAS/A** | `cms` | Hostinger CDN / IPs | **Keep** |
+| **MX** | `@` | Leave Hostinger MX (`mx1`/`mx2.hostinger.com`) | Do not delete if you use Hostinger mail |
+
+**Do not** switch nameservers to `ns1/ns2.vercel-dns.com` unless you intentionally move **all** DNS (including MX and `cms`) to Vercel DNS.
+
+**Do not** change Hostinger DNS from this agent environment (no hPanel API).
+
+### Content gate (verified 2026-08-12)
+
+| Host | Posts (`x-wp-total`) | Notes |
+|------|----------------------|-------|
+| `https://cms.automotonews.in/wp-json/…` | **57** | Symlink `public_html/cms` → `public_html` |
+| `https://automotonews.in/wp-json/…` (post-cutover) | **57** | Via Vercel rewrite → cms |
+
+### Cutover checklist
+
+1. [x] Smoke `https://automotonews.vercel.app` (real articles).
+2. [x] Apex `@` A → `76.76.21.21`; **keep** `cms`.
+3. [ ] Confirm `www` A → `76.76.21.21`.
+4. [ ] Set WP `home`/`siteurl` to cms; verify wp-admin.
+5. After DNS propagates:
+   - [x] Apex resolves to Next (Vercel) over HTTPS
+   - [x] `https://automotonews.in/wp-json/wp/v2/` answers (rewrite → cms, 57)
+   - [ ] Media under `/wp-content/uploads` spot-check
+   - [ ] Re-run preview checklist on `https://automotonews.in`
+6. Post-cutover (human): submit sitemap in Google Search Console; monitor coverage for flat URLs → 301s.
 
 ---
 
@@ -136,10 +182,10 @@ Full launch QA: [`PHASE9_LAUNCH_CHECKLIST.md`](./PHASE9_LAUNCH_CHECKLIST.md).
 Keep WordPress alive as the backend even when the public domain points at Next.
 
 - [ ] **Keep WordPress installed** — do not uninstall or wipe the site to “make room” for Next.
-- [ ] **Keep the REST API enabled** — `WP_API_URL` must remain reachable from Vercel (CORS/firewall/host allowlists if needed).
-- [ ] **Keep media / uploads** — `wp-content/uploads` must stay public; images are loaded from the WP host (see `next.config` image remote patterns).
+- [ ] **Keep the REST API enabled** — `WP_API_URL` must remain reachable from Vercel at `https://cms.automotonews.in/wp-json/wp/v2`.
+- [ ] **Keep media / uploads** — `wp-content/uploads` must stay public on cms; images allowlisted for `cms.automotonews.in` (and legacy apex hosts) in `next.config.ts`.
 - [ ] **Do not bulk-delete or bulk-edit WP posts** for the migration — redirects live in Next; content stays in WP.
-- [ ] Plan how WP admin and API remain reachable after the apex domain points at Vercel (common options: keep WP on the same hosting with path/proxy rules, or move WP/API/media to a subdomain such as `cms.` / `wp.` — **owner decides**; update `WP_API_URL` and image allowlists if the WP host URL changes).
+- [x] WP admin / API / media stay on **`cms.automotonews.in`**; apex visitors hit Next, with path rewrites for `/wp-*`.
 - [ ] Clean WP theme placeholders (social / WhatsApp) before or at cutover — see Phase 9 gaps below.
 
 ---
@@ -155,7 +201,7 @@ Do not claim “fully launched” until these are decided and configured. **Do n
 | **Newsletter** | Provider not configured — form must not claim successful delivery until `NEWSLETTER_*` are real |
 | **WP placeholders** | Live WP theme still had `YOUR_CHANNEL_HERE`, `YOUR_PACE_HERE`, fake WhatsApp — clean in WP; Next footer keeps `SOCIAL_LINKS` empty until real URLs exist |
 | **Compare vehicle data** | Provisional sample specs — replace with verified data or `null` before marketing as factual |
-| **Owner deploy approval** | Explicit yes required before Production + DNS |
+| **Apex DNS flip** | Owner must set Hostinger A `@` / `www` → `76.76.21.21` and keep `cms` |
 
 Details: [`PHASE9_LAUNCH_CHECKLIST.md`](./PHASE9_LAUNCH_CHECKLIST.md).
 
@@ -177,6 +223,7 @@ Trade-offs vs Vercel: more ops responsibility, SSL/process management, and WP/Ne
 
 ## Related documentation
 
+- [`CMS_SUBDOMAIN_ISSUE.md`](./CMS_SUBDOMAIN_ISSUE.md) — **cms vs apex content issue and fix steps**  
 - [`PHASE8_REDIRECTS.md`](./PHASE8_REDIRECTS.md) — redirect evidence, maps, cutover SEO notes  
 - [`PHASE9_LAUNCH_CHECKLIST.md`](./PHASE9_LAUNCH_CHECKLIST.md) — full QA / launch readiness checklist  
 - [`.env.example`](../.env.example) — environment variable templates (no secrets)

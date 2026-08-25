@@ -1,18 +1,17 @@
 "use client";
 
+import Link from "next/link";
 import { useState, type FormEvent } from "react";
+import { trackEvent } from "@/lib/gtag";
 
-/**
- * Newsletter UI only — no email provider is wired yet.
- * Do not pretend signup succeeded until Brevo/Mailchimp (or similar) is configured.
- */
 export function NewsletterFormClient() {
   const [email, setEmail] = useState("");
   const [consent, setConsent] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
-  const [tone, setTone] = useState<"error" | "info">("info");
+  const [tone, setTone] = useState<"error" | "info" | "success">("info");
 
-  function onSubmit(event: FormEvent<HTMLFormElement>) {
+  async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     const trimmed = email.trim();
@@ -28,10 +27,39 @@ export function NewsletterFormClient() {
       return;
     }
 
-    setTone("info");
-    setMessage(
-      "Newsletter delivery is not configured yet. An email provider (for example Brevo or Mailchimp) must be connected before subscriptions can be accepted.",
-    );
+    setLoading(true);
+    setMessage(null);
+
+    try {
+      const response = await fetch("/api/newsletter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: trimmed, consent }),
+      });
+
+      const data = await response.json().catch(() => null);
+
+      if (response.ok && data?.success) {
+        setTone("success");
+        setMessage(data.message || "Thank you for subscribing!");
+        setEmail("");
+        trackEvent({
+          action: "subscribe",
+          category: "newsletter",
+          label: trimmed,
+        });
+      } else {
+        setTone(data?.code === "NOT_CONFIGURED" ? "info" : "error");
+        setMessage(
+          data?.message || "Subscriptions are currently unconfigured or unavailable."
+        );
+      }
+    } catch {
+      setTone("error");
+      setMessage("A network error occurred. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -51,16 +79,18 @@ export function NewsletterFormClient() {
           type="email"
           required
           autoComplete="email"
+          disabled={loading}
           value={email}
           onChange={(event) => setEmail(event.target.value)}
           placeholder="Enter your email"
-          className="min-h-11 w-full flex-1 rounded-md border border-white/20 bg-white px-3 text-sm text-foreground"
+          className="min-h-11 w-full flex-1 rounded-md border border-white/20 bg-white px-3 text-sm text-foreground disabled:opacity-60"
         />
         <button
           type="submit"
-          className="inline-flex min-h-11 items-center justify-center rounded-md bg-accent px-5 text-sm font-semibold text-white hover:bg-accent-dark"
+          disabled={loading}
+          className="inline-flex min-h-11 items-center justify-center rounded-md bg-accent px-5 text-sm font-semibold text-white hover:bg-accent-dark disabled:opacity-60"
         >
-          Subscribe
+          {loading ? "Subscribing..." : "Subscribe"}
         </button>
       </div>
 
@@ -68,6 +98,7 @@ export function NewsletterFormClient() {
         <input
           type="checkbox"
           name="consent"
+          disabled={loading}
           checked={consent}
           onChange={(event) => setConsent(event.target.checked)}
           className="mt-1 size-4"
@@ -75,13 +106,26 @@ export function NewsletterFormClient() {
         />
         <span>
           I agree to receive email updates and understand I can unsubscribe
-          anytime. See the site Privacy Policy for details.
+          anytime. See the site{" "}
+          <Link
+            href="/privacy-policy"
+            className="font-medium text-white underline-offset-4 hover:underline"
+          >
+            Privacy Policy
+          </Link>{" "}
+          for details.
         </span>
       </label>
 
       {message ? (
         <p
-          className={`mt-4 text-sm ${tone === "error" ? "text-red-200" : "text-white/90"}`}
+          className={`mt-4 text-sm ${
+            tone === "error"
+              ? "text-red-200"
+              : tone === "success"
+                ? "text-emerald-300 font-medium"
+                : "text-white/90"
+          }`}
           role="status"
         >
           {message}

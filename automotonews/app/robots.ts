@@ -9,7 +9,13 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/search", "/api/"],
+        disallow: [
+          "/search",
+          "/api/",
+          "/wp-admin/",
+          "/wp-includes/",
+          "/wp-content/plugins/",
+        ],
       },
     ],
     sitemap: `${siteUrl}/sitemap.xml`,

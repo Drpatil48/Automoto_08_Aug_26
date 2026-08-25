@@ -5,7 +5,9 @@ import { ArticleBodyWithAds } from "@/components/ads/ArticleBodyWithAds";
 import { SidebarAd } from "@/components/ads/SidebarAd";
 import { AuthorBio } from "@/components/article/AuthorBio";
 import { Breadcrumbs } from "@/components/article/Breadcrumbs";
+import { QuickSummaryBox } from "@/components/article/QuickSummaryBox";
 import { RelatedArticles } from "@/components/article/RelatedArticles";
+import { NewsletterForm } from "@/components/home/NewsletterForm";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { Badge } from "@/components/ui/Badge";
 import { CmsStateMessage } from "@/components/ui/CmsStateMessage";
@@ -50,16 +52,9 @@ export async function generateMetadata({ params }: ArticlePageProps) {
     });
   }
 
+  let article: Article | null = null;
   try {
-    const article = await getArticleBySlug(slug);
-    if (!article) {
-      return buildPageMetadata({
-        title: "Article not found",
-        path: `/${categorySlug}/${slug}`,
-        noIndex: true,
-      });
-    }
-    return buildArticleMetadata(article);
+    article = await getArticleBySlug(slug);
   } catch {
     return buildPageMetadata({
       title: slug,
@@ -67,6 +62,9 @@ export async function generateMetadata({ params }: ArticlePageProps) {
       noIndex: true,
     });
   }
+
+  if (!article) notFound();
+  return buildArticleMetadata(article);
 }
 
 export default async function ArticlePage({ params }: ArticlePageProps) {
@@ -164,7 +162,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
           <header className="mb-8">
             <Badge tone={category.tone}>{category.name}</Badge>
-            <h1 className="mt-3 text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
+            <h1 className="mt-3 text-2xl font-bold leading-tight tracking-tight break-words [overflow-wrap:anywhere] sm:text-4xl">
               {article.title}
             </h1>
             <p className="mt-4 text-sm text-muted">
@@ -203,15 +201,15 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             </div>
           ) : null}
 
-          {article.excerpt ? (
-            <p className="mb-8 text-lg leading-relaxed text-muted">
-              {article.excerpt}
-            </p>
-          ) : null}
+          {article.excerpt ? <QuickSummaryBox summary={article.excerpt} /> : null}
 
           <ArticleBodyWithAds html={article.body} />
           <AuthorBio author={article.author} />
           <RelatedArticles articles={related} />
+
+          <div className="mt-10">
+            <NewsletterForm />
+          </div>
 
           <p className="mt-10 text-sm text-muted">
             <Link

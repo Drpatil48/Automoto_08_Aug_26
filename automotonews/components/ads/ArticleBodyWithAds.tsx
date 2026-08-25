@@ -1,5 +1,6 @@
 import { AdSlot } from "@/components/ads/AdSlot";
 import { ArticleBody } from "@/components/article/ArticleBody";
+import { canRenderLiveAd } from "@/lib/ads";
 
 type ArticleBodyWithAdsProps = {
   html: string;
@@ -10,6 +11,10 @@ type ArticleBodyWithAdsProps = {
  * paragraph groups. Slots are clearly labeled and layout-reserved.
  */
 export function ArticleBodyWithAds({ html }: ArticleBodyWithAdsProps) {
+  if (!canRenderLiveAd("inArticle")) {
+    return <ArticleBody html={html} />;
+  }
+
   const chunks = splitHtmlIntoChunks(html, 3);
 
   if (chunks.length <= 1) {

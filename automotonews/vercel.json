@@ -1,0 +1,20 @@
+{
+  "rewrites": [
+    {
+      "source": "/wp-json/:path*",
+      "destination": "https://cms.automotonews.in/wp-json/:path*"
+    },
+    {
+      "source": "/wp-admin/:path*",
+      "destination": "https://cms.automotonews.in/wp-admin/:path*"
+    },
+    {
+      "source": "/wp-content/:path*",
+      "destination": "https://cms.automotonews.in/wp-content/:path*"
+    },
+    {
+      "source": "/wp-includes/:path*",
+      "destination": "https://cms.automotonews.in/wp-includes/:path*"
+    }
+  ]
+}

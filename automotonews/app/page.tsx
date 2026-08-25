@@ -5,6 +5,7 @@ import { Hero } from "@/components/home/Hero";
 import { NewsletterForm } from "@/components/home/NewsletterForm";
 import { SectionHeading } from "@/components/home/SectionHeading";
 import { TopStories } from "@/components/home/TopStories";
+import { TrendingNow } from "@/components/home/TrendingNow";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { CmsStateMessage } from "@/components/ui/CmsStateMessage";
 import {
@@ -29,14 +30,25 @@ async function loadCategoryRail(
   slug: string,
   fallbackName: string,
   fallbackDescription: string,
+  excludedSlug?: string,
 ): Promise<{ category: Category; articles: Article[]; error?: string }> {
   try {
-    const result = await getArticlesByCategorySlug(slug, { perPage: 4 });
+    const result = await getArticlesByCategorySlug(slug, { perPage: 12 });
     const category = buildCategoryMeta(slug, {
-      name: result.articles[0]?.categoryName || fallbackName,
+      // The rail represents the requested archive, not the first post's
+      // primary category (posts can belong to more than one WP category).
+      name: fallbackName,
       description: fallbackDescription,
     });
-    return { category, articles: result.articles };
+    return {
+      category,
+      // Do not surface cross-listed car/EV posts inside a dedicated rail.
+      articles: result.articles
+        .filter(
+          (article) => article.category === slug && article.slug !== excludedSlug,
+        )
+        .slice(0, 4),
+    };
   } catch (error) {
     const message =
       error instanceof CmsRequestError
@@ -83,11 +95,17 @@ export default async function HomePage() {
   const featured = latest[0] ?? null;
   const topStories = latest.slice(1, 5);
 
-  const [evRail, bikeRail, guideRail] = await Promise.all([
+  const [evRail, carRail, bikeRail, guideRail] = await Promise.all([
     loadCategoryRail(
       "electric-vehicles-evs",
       "EV Spotlight",
       "Charging, battery health, range, and the latest EV launches.",
+      featured?.slug,
+    ),
+    loadCategoryRail(
+      "car-news",
+      "Car News",
+      "Latest car launches, price updates, and reviews.",
     ),
     loadCategoryRail(
       "sportsbikes",
@@ -130,6 +148,8 @@ export default async function HomePage() {
 
       {topStories.length > 0 ? <TopStories articles={topStories} /> : null}
 
+      {latest.length > 0 ? <TrendingNow articles={latest.slice(0, 4)} /> : null}
+
       {evRail.error ? (
         <div className="mx-auto max-w-6xl px-4 py-6">
           <CmsStateMessage
@@ -145,6 +165,14 @@ export default async function HomePage() {
           articles={evRail.articles}
         />
       )}
+
+      {carRail.articles.length > 0 ? (
+        <CategoryRail
+          sectionId="cars"
+          category={carRail.category}
+          articles={carRail.articles}
+        />
+      ) : null}
 
       {bikeRail.error ? (
         <div className="mx-auto max-w-6xl px-4 py-6">

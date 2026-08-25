@@ -32,6 +32,19 @@ export function Header() {
                 </Link>
               ))}
             </nav>
+            <Link
+              href="/search"
+              aria-label="Search articles"
+              className="inline-flex size-11 items-center justify-center rounded-md text-white/85 hover:bg-white/10 hover:text-white"
+            >
+              <svg
+                className="size-5 fill-none stroke-current stroke-2"
+                viewBox="0 0 24 24"
+              >
+                <circle cx="11" cy="11" r="8" />
+                <path d="m21 21-4.35-4.35" />
+              </svg>
+            </Link>
             <MobileNav />
           </div>
         </div>

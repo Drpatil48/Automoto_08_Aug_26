@@ -84,6 +84,20 @@ export function stripHtml(value: string): string {
 }
 
 /**
+ * Ensures slug consists of clean ASCII characters, converting or stripping non-ASCII (Devanagari) characters.
+ */
+export function ensureEnglishSlug(slug: string): string {
+  return slug
+    .toLowerCase()
+    .trim()
+    .replace(/[\u0900-\u097F]+/g, "") // remove Devanagari Unicode block if mixed
+    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
+/**
  * Contact Form 7 markup cannot submit from the headless Next.js front-end.
  * Replace it with an honest notice so readers do not see a broken form.
  */

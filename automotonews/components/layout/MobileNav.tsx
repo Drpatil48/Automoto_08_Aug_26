@@ -34,7 +34,6 @@ export function MobileNav() {
         aria-label={open ? "Close menu" : "Open menu"}
         onClick={() => setOpen((value) => !value)}
       >
-        <span className="sr-only">{open ? "Close menu" : "Open menu"}</span>
         <span aria-hidden="true" className="flex flex-col gap-1.5">
           <span
             className={`block h-0.5 w-5 bg-current transition ${open ? "translate-y-2 rotate-45" : ""}`}
@@ -49,39 +48,47 @@ export function MobileNav() {
       </button>
 
       {open ? (
-        <div
-          id={panelId}
-          className="absolute inset-x-0 top-full z-40 border-b border-border bg-surface shadow-lg"
-        >
-          <nav aria-label="Mobile" className="px-4 py-3">
-            <ul className="flex flex-col gap-1">
-              {PRIMARY_NAV.map((item) => (
-                <li key={item.href}>
-                  <Link
-                    href={item.href}
-                    className="block min-h-11 rounded-md px-3 py-3 text-base font-medium text-foreground hover:bg-background"
-                    onClick={() => setOpen(false)}
-                  >
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-            <ul className="mt-3 flex flex-col gap-1 border-t border-border pt-3">
-              {UTILITY_NAV.map((item) => (
-                <li key={item.href}>
-                  <Link
-                    href={item.href}
-                    className="block min-h-11 rounded-md px-3 py-3 text-base font-medium text-muted hover:bg-background hover:text-foreground"
-                    onClick={() => setOpen(false)}
-                  >
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        </div>
+        <>
+          <button
+            type="button"
+            className="fixed inset-0 z-30 bg-black/40 md:hidden"
+            aria-label="Close menu"
+            onClick={() => setOpen(false)}
+          />
+          <div
+            id={panelId}
+            className="absolute inset-x-0 top-full z-40 border-b border-border bg-surface shadow-lg"
+          >
+            <nav aria-label="Mobile" className="px-4 py-3">
+              <ul className="flex flex-col gap-1">
+                {PRIMARY_NAV.map((item) => (
+                  <li key={item.href}>
+                    <Link
+                      href={item.href}
+                      className="block min-h-11 rounded-md px-3 py-3 text-base font-medium text-foreground hover:bg-background"
+                      onClick={() => setOpen(false)}
+                    >
+                      {item.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+              <ul className="mt-3 flex flex-col gap-1 border-t border-border pt-3">
+                {UTILITY_NAV.map((item) => (
+                  <li key={item.href}>
+                    <Link
+                      href={item.href}
+                      className="block min-h-11 rounded-md px-3 py-3 text-base font-medium text-muted hover:bg-background hover:text-foreground"
+                      onClick={() => setOpen(false)}
+                    >
+                      {item.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </div>
+        </>
       ) : null}
     </div>
   );

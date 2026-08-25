@@ -4,13 +4,19 @@ Phase-by-phase rebuild of [automotonews.in](https://automotonews.in/). Spec: `..
 
 ## Current phase
 
-**Phase 9** — QA & launch preparation (audit, checklist, safe fixes only — **no deploy**).
+**Phase 9** — QA & launch preparation (checklist + post-cutover verification).
+
+**Cutover (2026-08-12):** Apex https://automotonews.in is Next.js on Vercel; WordPress CMS on https://cms.automotonews.in (57 posts). Day log: [`docs/CUTOVER_LOG_2026-08-12.md`](docs/CUTOVER_LOG_2026-08-12.md).
 
 Previous: Phase 8 (redirects), Phase 7 (performance), Phase 6 (compare + search), Phase 5 (AdSense).
 
 Launch checklist: [`docs/PHASE9_LAUNCH_CHECKLIST.md`](docs/PHASE9_LAUNCH_CHECKLIST.md).  
 Redirect strategy: [`docs/PHASE8_REDIRECTS.md`](docs/PHASE8_REDIRECTS.md).  
-Deployment steps: [`docs/STEPS_FOR_DEPLOYMENT.md`](docs/STEPS_FOR_DEPLOYMENT.md).
+Deployment steps: [`docs/STEPS_FOR_DEPLOYMENT.md`](docs/STEPS_FOR_DEPLOYMENT.md).  
+Cutover day log: [`docs/CUTOVER_LOG_2026-08-12.md`](docs/CUTOVER_LOG_2026-08-12.md).  
+CMS / DNS history: [`docs/CMS_SUBDOMAIN_ISSUE.md`](docs/CMS_SUBDOMAIN_ISSUE.md).
+
+**Open after cutover:** confirm `www` DNS → Vercel; set WordPress `home`/`siteurl` to `cms` so wp-admin does not redirect to apex.
 
 Ads stay in **placeholder mode** until you set `NEXT_PUBLIC_ADSENSE_CLIENT_ID`
 (and optional slot IDs) in `.env.local`. See `.env.example`. The AdSense script
