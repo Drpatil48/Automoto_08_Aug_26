@@ -7,8 +7,10 @@ import { CompareTray } from "@/components/compare/CompareTray";
 import { CompareTrayProvider } from "@/components/compare/CompareTrayProvider";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
+import { GoogleAnalyticsScript } from "@/components/analytics/GoogleAnalyticsScript";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { SITE_DESCRIPTION, SITE_NAME } from "@/lib/constants";
+import { canRenderLiveAd } from "@/lib/ads";
 import {
   buildOrganizationJsonLd,
   buildWebSiteJsonLd,
@@ -61,6 +63,13 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
   },
 };
 
@@ -69,10 +78,23 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const hasMobileAnchorAd = canRenderLiveAd("mobileAnchor");
+
   return (
     <html lang="mr" className={`${latin.variable} ${devanagari.variable} h-full`}>
-      <body className="flex min-h-full flex-col pb-[calc(4.5rem+env(safe-area-inset-bottom,0px))] antialiased md:pb-0">
+      <head>
+        <link rel="preconnect" href="https://cms.automotonews.in" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://cms.automotonews.in" />
+      </head>
+      <body
+        className={`flex min-h-full flex-col antialiased ${
+          hasMobileAnchorAd
+            ? "pb-[calc(4.5rem+env(safe-area-inset-bottom,0px))] md:pb-0"
+            : "pb-0"
+        }`}
+      >
         <CompareTrayProvider>
+          <GoogleAnalyticsScript />
           <AdSenseScript />
           <JsonLd data={[buildOrganizationJsonLd(), buildWebSiteJsonLd()]} />
           <a href="#main-content" className="skip-link">

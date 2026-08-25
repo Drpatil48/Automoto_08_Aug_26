@@ -30,6 +30,12 @@ export function AdSlot({
   const minHeight = reservedMinHeight(size);
   const slotId = live ? config.slots[placement] : null;
 
+  // Empty ad inventory should not reserve editorial space or look like a
+  // loading failure. The owning placement also collapses when this is false.
+  if (!live || !config.clientId || !slotId) {
+    return null;
+  }
+
   return (
     <aside
       className={`ad-slot ad-slot--${size} ${className}`}
@@ -40,19 +46,13 @@ export function AdSlot({
     >
       <p className="ad-slot__label">{label}</p>
       <div className="ad-slot__frame" style={{ minHeight }}>
-        {live && config.clientId && slotId ? (
-          <AdSenseIns
-            clientId={config.clientId}
-            slotId={slotId}
-            placement={placement}
-            size={size}
-            minHeight={minHeight}
-          />
-        ) : (
-          <div className="ad-slot__placeholder" aria-hidden="true">
-            <span>Ad space reserved</span>
-          </div>
-        )}
+        <AdSenseIns
+          clientId={config.clientId}
+          slotId={slotId}
+          placement={placement}
+          size={size}
+          minHeight={minHeight}
+        />
       </div>
     </aside>
   );

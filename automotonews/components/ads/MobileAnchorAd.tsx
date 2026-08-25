@@ -1,11 +1,13 @@
 import { AdSlot } from "@/components/ads/AdSlot";
-import { reservedMinHeight } from "@/lib/ads";
+import { canRenderLiveAd, reservedMinHeight } from "@/lib/ads";
 
 /**
  * Mobile sticky footer anchor unit.
  * Fixed reserved height + safe-area padding to limit CLS with the compare tray.
  */
 export function MobileAnchorAd() {
+  if (!canRenderLiveAd("mobileAnchor")) return null;
+
   const minHeight = reservedMinHeight("anchor");
 
   return (

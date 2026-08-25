@@ -44,16 +44,17 @@ export async function generateMetadata({
     });
   }
 
+  let category: Category | null = null;
+  let totalPages = 1;
   try {
-    const category = await getCategoryBySlug(categorySlug);
-    if (!category) {
-      return buildPageMetadata({
-        title: "Category not found",
-        path: `/${categorySlug}`,
-        noIndex: true,
+    category = await getCategoryBySlug(categorySlug);
+    if (category && page > 1) {
+      const result = await getArticlesByCategorySlug(category.slug, {
+        page,
+        perPage: 12,
       });
+      totalPages = result.totalPages;
     }
-    return buildCategoryMetadata(category, page);
   } catch {
     return buildPageMetadata({
       title: categorySlug,
@@ -61,6 +62,10 @@ export async function generateMetadata({
       noIndex: true,
     });
   }
+
+  if (!category) notFound();
+  if (page > 1 && totalPages > 0 && page > totalPages) notFound();
+  return buildCategoryMetadata(category, page);
 }
 
 export default async function CategoryPage({
@@ -132,6 +137,10 @@ export default async function CategoryPage({
   }
 
   if (!category) notFound();
+
+  if (page > 1 && totalPages > 0 && page > totalPages) {
+    notFound();
+  }
 
   const styled = buildCategoryMeta(category.slug, category);
 

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import {
+  SITE_CONTACT_EMAIL,
   SITE_DESCRIPTION,
   SITE_NAME,
   SITE_TAGLINE,
@@ -96,6 +97,13 @@ export function buildPageMetadata({
       : {
           index: true,
           follow: true,
+          googleBot: {
+            index: true,
+            follow: true,
+            "max-image-preview": "large",
+            "max-snippet": -1,
+            "max-video-preview": -1,
+          },
         },
   };
 }
@@ -135,13 +143,29 @@ export function buildCategoryMetadata(
 }
 
 export function buildArticleMetadata(article: Article): Metadata {
-  return buildPageMetadata({
+  const base = buildPageMetadata({
     title: article.title,
     description: article.excerpt || SITE_DESCRIPTION,
     path: articleHref(article),
     image: article.coverImage,
     type: "article",
   });
+
+  const published = toIsoDate(article.publishDate);
+  const modified = toIsoDate(article.updatedDate) ?? published;
+
+  return {
+    ...base,
+    openGraph: {
+      ...base.openGraph,
+      type: "article",
+      publishedTime: published,
+      modifiedTime: modified,
+      authors: article.author.name ? [article.author.name] : undefined,
+      section: article.categoryName || article.category,
+      tags: article.tags,
+    },
+  };
 }
 
 export function buildStaticPageMetadata({
@@ -206,8 +230,17 @@ export function buildOrganizationJsonLd(): Record<string, unknown> {
     "@type": "Organization",
     name: SITE_NAME,
     url: getSiteUrl(),
-    logo: defaultOgImageUrl(),
+    logo: {
+      "@type": "ImageObject",
+      url: defaultOgImageUrl(),
+    },
     description: SITE_DESCRIPTION,
+    contactPoint: {
+      "@type": "ContactPoint",
+      email: SITE_CONTACT_EMAIL,
+      contactType: "customer service",
+      availableLanguage: ["mr", "en"],
+    },
     ...(sameAs.length > 0 ? { sameAs } : {}),
   };
 }
@@ -300,6 +333,7 @@ export function buildArticleJsonLd(
     ...(article.tags.length > 0 ? { keywords: article.tags.join(", ") } : {}),
     articleSection: article.categoryName || article.category,
     inLanguage: "mr",
+    isAccessibleForFree: true,
     url,
   };
 }

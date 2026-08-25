@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Badge } from "@/components/ui/Badge";
-import { buildCategoryMeta } from "@/lib/category-style";
+import { articleCoverSrc, buildCategoryMeta } from "@/lib/category-style";
 import { articleHref, type Article } from "@/lib/types";
 
 type HeroProps = {
@@ -21,7 +21,7 @@ export function Hero({ article }: HeroProps) {
     name: article.categoryName,
   });
   const href = articleHref(article);
-  const imageSrc = article.coverImage ?? "/placeholders/cover-daily.svg";
+  const imageSrc = articleCoverSrc(article);
   const imageAlt = article.coverImageAlt || article.title;
 
   return (
@@ -45,15 +45,18 @@ export function Hero({ article }: HeroProps) {
         </Link>
 
         <div className="flex flex-col justify-center px-4 py-8 sm:px-8 sm:py-10">
-          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-accent">
-            Featured story
-          </p>
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-xs font-semibold uppercase tracking-[0.14em] text-accent">
+              LATEST AUTOMOTIVE NEWS
+            </span>
+            <span className="hidden text-xs text-muted sm:inline">• मराठीत ताज्या बातम्या</span>
+          </div>
           <div className="mt-3">
             <Badge tone={category.tone}>{category.name}</Badge>
           </div>
           <h1
             id="hero-heading"
-            className="mt-3 text-3xl font-bold leading-tight tracking-tight sm:text-4xl"
+            className="mt-3 text-2xl font-bold leading-tight tracking-tight break-words [overflow-wrap:anywhere] sm:text-4xl"
           >
             <Link href={href} className="hover:text-accent">
               {article.title}
@@ -71,7 +74,7 @@ export function Hero({ article }: HeroProps) {
               href={href}
               className="inline-flex min-h-11 items-center justify-center rounded-md bg-accent px-5 text-sm font-semibold text-white hover:bg-accent-dark"
             >
-              Read full story
+              संपूर्ण बातमी वाचा
             </Link>
           </div>
         </div>

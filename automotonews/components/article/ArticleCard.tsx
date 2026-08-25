@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Badge } from "@/components/ui/Badge";
-import { buildCategoryMeta } from "@/lib/category-style";
+import { articleCoverSrc, buildCategoryMeta } from "@/lib/category-style";
 import { articleHref, type Article } from "@/lib/types";
 
 type ArticleCardProps = {
@@ -27,7 +27,7 @@ export function ArticleCard({
     name: article.categoryName,
   });
   const href = articleHref(article);
-  const imageSrc = article.coverImage ?? "/placeholders/cover-daily.svg";
+  const imageSrc = articleCoverSrc(article);
   const imageAlt = article.coverImageAlt || article.title;
 
   if (variant === "compact") {

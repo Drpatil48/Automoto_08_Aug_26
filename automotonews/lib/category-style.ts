@@ -1,4 +1,4 @@
-import type { Category, CategorySlug, CategoryTone } from "@/lib/types";
+import type { Article, Category, CategorySlug, CategoryTone } from "@/lib/types";
 import { categoryHref } from "@/lib/types";
 
 const TONE_BY_SLUG: Record<string, CategoryTone> = {
@@ -61,6 +61,28 @@ export const CATEGORY_FALLBACKS: Record<
     tone: "car",
   },
 };
+
+/** Local SVG used when WordPress has no featured image. */
+export function categoryCoverPlaceholder(slug: string): string {
+  switch (toneForCategorySlug(slug)) {
+    case "ev":
+      return "/placeholders/cover-ev.svg";
+    case "bike":
+      return "/placeholders/cover-bike.svg";
+    case "car":
+      return "/placeholders/cover-car.svg";
+    case "guide":
+      return "/placeholders/cover-guide.svg";
+    default:
+      return "/placeholders/cover-daily.svg";
+  }
+}
+
+export function articleCoverSrc(
+  article: Pick<Article, "coverImage" | "category">,
+): string {
+  return article.coverImage || categoryCoverPlaceholder(article.category);
+}
 
 export function buildCategoryMeta(
   slug: CategorySlug,

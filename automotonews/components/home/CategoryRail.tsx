@@ -13,6 +13,17 @@ export function CategoryRail({
   articles,
   sectionId,
 }: CategoryRailProps) {
+  const sectionIconMap: Record<string, string> = {
+    ev: "⚡ ",
+    cars: "🚗 ",
+    "car-news": "🚗 ",
+    bikes: "🏍️ ",
+    sportsbikes: "🏍️ ",
+    guides: "💰 ",
+    "auto-technology": "💰 ",
+  };
+
+  const titleWithIcon = `${sectionIconMap[sectionId] ?? ""}${category.name}`;
   const headingId = `${sectionId}-heading`;
 
   return (
@@ -23,7 +34,7 @@ export function CategoryRail({
     >
       <SectionHeading
         id={headingId}
-        title={category.name}
+        title={titleWithIcon}
         description={category.description}
         href={category.href}
       />
