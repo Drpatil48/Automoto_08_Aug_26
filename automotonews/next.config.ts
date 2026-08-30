@@ -12,6 +12,7 @@ const nextConfig: NextConfig = {
   // Phase 8: avoid Next's automatic 308 slash redirect chaining with our 301 maps.
   // Trailing-slash old URLs are handled explicitly in lib/redirects.ts (one hop).
   skipTrailingSlashRedirect: true,
+  outputFileTracingRoot: projectRoot,
   turbopack: {
     // Keep Turbopack rooted on this app when a parent lockfile exists.
     root: projectRoot,
