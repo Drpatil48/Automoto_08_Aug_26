@@ -1,0 +1,10 @@
+User-Agent: *
+Allow: /
+Disallow: /search
+Disallow: /api/
+Disallow: /wp-admin/
+Disallow: /wp-includes/
+Disallow: /wp-content/plugins/
+
+Host: https://automotonews.in
+Sitemap: https://automotonews.in/sitemap.xml

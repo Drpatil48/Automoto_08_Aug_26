@@ -1,0 +1,17 @@
+{
+  "/(category)/[category]/[slug]/page": "/[category]/[slug]",
+  "/(category)/[category]/page": "/[category]",
+  "/_global-error/page": "/_global-error",
+  "/_not-found/page": "/_not-found",
+  "/about-us/page": "/about-us",
+  "/api/newsletter/route": "/api/newsletter",
+  "/compare/page": "/compare",
+  "/contact/page": "/contact",
+  "/disclaimer/page": "/disclaimer",
+  "/favicon.ico/route": "/favicon.ico",
+  "/page": "/",
+  "/privacy-policy/page": "/privacy-policy",
+  "/robots.txt/route": "/robots.txt",
+  "/search/page": "/search",
+  "/sitemap.xml/route": "/sitemap.xml"
+}
