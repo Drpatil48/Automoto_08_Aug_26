@@ -24,19 +24,68 @@ type StaticPageConfig = {
   showContactEmail?: boolean;
 };
 
+import { FALLBACK_POLICIES } from "@/lib/policy-fallbacks";
+
 async function loadPage(routeSlug: string): Promise<{
   page: CmsPage | null;
   error: string | null;
   configMissing: boolean;
 }> {
   if (!isCmsConfigured()) {
+    const fallback = FALLBACK_POLICIES[routeSlug];
+    if (fallback) {
+      return {
+        page: {
+          title: fallback.title,
+          slug: routeSlug,
+          excerpt: fallback.excerpt,
+          body: fallback.bodyHtml,
+          publishDate: new Date().toISOString(),
+          updatedDate: new Date().toISOString(),
+        },
+        error: null,
+        configMissing: false,
+      };
+    }
     return { page: null, error: null, configMissing: true };
   }
 
   try {
     const page = await getPageByRouteSlug(routeSlug);
+    if (!page) {
+      const fallback = FALLBACK_POLICIES[routeSlug];
+      if (fallback) {
+        return {
+          page: {
+            title: fallback.title,
+            slug: routeSlug,
+            excerpt: fallback.excerpt,
+            body: fallback.bodyHtml,
+            publishDate: new Date().toISOString(),
+            updatedDate: new Date().toISOString(),
+          },
+          error: null,
+          configMissing: false,
+        };
+      }
+    }
     return { page, error: null, configMissing: false };
   } catch (error) {
+    const fallback = FALLBACK_POLICIES[routeSlug];
+    if (fallback) {
+      return {
+        page: {
+          title: fallback.title,
+          slug: routeSlug,
+          excerpt: fallback.excerpt,
+          body: fallback.bodyHtml,
+          publishDate: new Date().toISOString(),
+          updatedDate: new Date().toISOString(),
+        },
+        error: null,
+        configMissing: false,
+      };
+    }
     if (error instanceof CmsConfigError) {
       return { page: null, error: error.message, configMissing: true };
     }
@@ -71,7 +120,7 @@ export function createStaticPage({
 
     if (configMissing) {
       return (
-        <div className="mx-auto max-w-3xl px-4 py-10">
+        <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 sm:py-12">
           <CmsStateMessage
             tone="info"
             title="WordPress API not configured"
@@ -84,7 +133,7 @@ export function createStaticPage({
 
     if (error) {
       return (
-        <div className="mx-auto max-w-3xl px-4 py-10">
+        <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 sm:py-12">
           <CmsStateMessage
             tone="error"
             title="Could not load page"
@@ -98,26 +147,28 @@ export function createStaticPage({
     if (!page) notFound();
 
     return (
-      <article className="mx-auto max-w-3xl px-4 py-8 sm:py-10">
+      <article className="mx-auto max-w-4xl px-4 py-8 sm:px-6 sm:py-12">
         <JsonLd
           data={buildBreadcrumbJsonLd([
             { name: "Home", path: "/" },
             { name: page.title, path },
           ])}
         />
-        <Breadcrumbs
-          items={[{ label: "Home", href: "/" }, { label: page.title }]}
-        />
-        <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
-          {page.title}
-        </h1>
-        {page.excerpt ? (
-          <p className="mt-4 text-lg leading-relaxed text-muted">{page.excerpt}</p>
-        ) : null}
-        <div className="mt-8">
-          <ArticleBody html={page.body} />
+        <div className="rounded-2xl border border-zinc-800/80 bg-zinc-950/70 p-6 sm:p-10 shadow-xl">
+          <Breadcrumbs
+            items={[{ label: "Home", href: "/" }, { label: page.title }]}
+          />
+          <h1 className="text-3xl font-black uppercase tracking-tight text-white sm:text-4xl">
+            {page.title}
+          </h1>
+          {page.excerpt ? (
+            <p className="mt-3 text-sm leading-relaxed text-zinc-400 sm:text-base">{page.excerpt}</p>
+          ) : null}
+          <div className="mt-8 border-t border-zinc-800/80 pt-6">
+            <ArticleBody html={page.body} />
+          </div>
+          {showContactEmail ? <SiteContactEmailBlock /> : null}
         </div>
-        {showContactEmail ? <SiteContactEmailBlock /> : null}
       </article>
     );
   }
@@ -128,19 +179,19 @@ export function createStaticPage({
 function SiteContactEmailBlock() {
   return (
     <aside
-      className="mt-8 rounded-xl border border-border bg-surface px-4 py-4 sm:px-5"
+      className="mt-8 rounded-xl border border-zinc-800 bg-zinc-900/80 p-5"
       aria-label="Contact email"
     >
-      <p className="text-sm font-semibold text-foreground">Email us</p>
-      <p className="mt-1 text-sm leading-relaxed text-muted">
-        For questions, corrections, or partnership inquiries, write to{" "}
+      <p className="text-xs font-black uppercase tracking-wider text-red-500">Email Us</p>
+      <p className="mt-2 text-xs sm:text-sm leading-relaxed text-zinc-300">
+        For questions, corrections, or editorial inquiries, write to{" "}
         <a
           href={`mailto:${SITE_CONTACT_EMAIL}`}
-          className="font-medium text-foreground underline-offset-4 hover:underline"
+          className="font-bold text-red-400 underline underline-offset-4 hover:text-white"
         >
           {SITE_CONTACT_EMAIL}
         </a>
-        . We monitor that inbox.
+        .
       </p>
     </aside>
   );

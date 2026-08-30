@@ -7,10 +7,10 @@ type AuthorBioProps = {
 
 export function AuthorBio({ author }: AuthorBioProps) {
   return (
-    <aside className="mt-10 rounded-xl border border-border bg-surface p-4 sm:p-5">
+    <aside className="mt-10 rounded-2xl border border-zinc-800/80 bg-zinc-900/60 p-5 sm:p-6">
       <div className="flex gap-4">
         {author.avatarUrl ? (
-          <div className="relative size-14 shrink-0 overflow-hidden rounded-full bg-border">
+          <div className="relative size-14 shrink-0 overflow-hidden rounded-full border border-zinc-700 bg-zinc-800">
             <Image
               src={author.avatarUrl}
               alt=""
@@ -21,29 +21,35 @@ export function AuthorBio({ author }: AuthorBioProps) {
           </div>
         ) : (
           <div
-            className="flex size-14 shrink-0 items-center justify-center rounded-full bg-border text-sm font-semibold text-muted"
+            className="flex size-14 shrink-0 items-center justify-center rounded-full bg-red-950 border border-red-800 text-sm font-black text-red-400 tracking-wider"
             aria-hidden="true"
           >
-            {author.name.slice(0, 1).toUpperCase()}
+            {author.name
+              .split(" ")
+              .map((part) => part[0])
+              .filter(Boolean)
+              .slice(0, 2)
+              .join("")
+              .toUpperCase()}
           </div>
         )}
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-xs font-semibold uppercase tracking-wide text-muted">
-              Written by
+            <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">
+              WRITTEN BY
             </span>
-            <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-xs font-medium text-emerald-700 dark:text-emerald-400">
+            <span className="inline-flex items-center gap-1 rounded-full bg-emerald-950/80 border border-emerald-800/60 px-2.5 py-0.5 text-xs font-semibold text-emerald-400">
               <svg className="size-3 fill-current" viewBox="0 0 16 16">
                 <path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.75.75 0 0 1 1.06-1.06L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0z" />
               </svg>
               Verified Automotive Editor
             </span>
           </div>
-          <h2 className="mt-1 text-base font-bold text-foreground">{author.name}</h2>
+          <h2 className="mt-1 text-lg font-extrabold text-white">{author.name}</h2>
           {author.bio ? (
-            <p className="mt-2 text-sm leading-relaxed text-muted">{author.bio}</p>
+            <p className="mt-2 text-xs sm:text-sm leading-relaxed text-zinc-400">{author.bio}</p>
           ) : (
-            <p className="mt-1 text-xs text-muted">
+            <p className="mt-1 text-xs text-zinc-400">
               Editorial team member covering Indian car, bike, and EV developments with factual verification.
             </p>
           )}
