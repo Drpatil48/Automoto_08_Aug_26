@@ -1,6 +1,7 @@
 {
   "buildCommand": "cd automotonews && npm run build",
   "installCommand": "cd automotonews && npm install",
+  "outputDirectory": "automotonews/.next",
   "framework": "nextjs",
   "rewrites": [
     {
