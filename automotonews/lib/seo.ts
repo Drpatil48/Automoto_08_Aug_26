@@ -337,3 +337,56 @@ export function buildArticleJsonLd(
     url,
   };
 }
+
+export function buildFaqJsonLd(
+  faqs: { question: string; answer: string }[],
+): Record<string, unknown> | null {
+  const validFaqs = faqs.filter(
+    (f) => f.question?.trim() && f.answer?.trim(),
+  );
+  if (validFaqs.length === 0) return null;
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: validFaqs.map((faq) => ({
+      "@type": "Question",
+      name: faq.question.trim(),
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: faq.answer.trim(),
+      },
+    })),
+  };
+}
+
+export function extractFaqsFromHtml(
+  html: string,
+): { question: string; answer: string }[] {
+  const faqs: { question: string; answer: string }[] = [];
+  if (!html) return faqs;
+
+  const headingRegex =
+    /<h[2-4][^>]*>([\s\S]*?)<\/h[2-4]>\s*<p[^>]*>([\s\S]*?)<\/p>/gi;
+  let match: RegExpExecArray | null;
+  while ((match = headingRegex.exec(html)) !== null) {
+    const rawQ = match[1].replace(/<[^>]*>/g, "").trim();
+    const rawA = match[2].replace(/<[^>]*>/g, "").trim();
+
+    if (
+      rawQ.endsWith("?") ||
+      rawQ.endsWith("？") ||
+      /^(Q\d*[:.]|प्रश्न[:.]|FAQ[:.]|वारंवार विचारले जाणारे)/i.test(rawQ) ||
+      rawQ.includes("काय आहे") ||
+      rawQ.includes("कशी आहे") ||
+      rawQ.includes("किती आहे") ||
+      rawQ.includes("केव्हा") ||
+      rawQ.includes("कधी")
+    ) {
+      if (rawQ.length > 5 && rawA.length > 10) {
+        faqs.push({ question: rawQ, answer: rawA });
+      }
+    }
+  }
+  return faqs;
+}

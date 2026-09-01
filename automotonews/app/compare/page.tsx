@@ -91,11 +91,20 @@ export default async function ComparePage({ searchParams }: ComparePageProps) {
         Choose two cars or two bikes to compare prices, engine displacement, mileage or EV range, seating, boot space, seat height, and safety features. Cross-category comparison (Cars vs Bikes) is strictly separated for factual accuracy.
       </p>
 
-      <div className="mt-8">
+      <div className="mt-8 min-h-[380px]">
         <Suspense
           fallback={
-            <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-6 text-sm text-zinc-400">
-              Loading compare tool…
+            <div className="min-h-[380px] rounded-2xl border border-zinc-800/80 bg-zinc-950/80 p-5 sm:p-7 shadow-xl animate-pulse">
+              <div className="flex gap-2 border-b border-zinc-800/80 pb-4 mb-6">
+                <div className="h-9 w-36 rounded-xl bg-zinc-900" />
+                <div className="h-9 w-36 rounded-xl bg-zinc-900" />
+              </div>
+              <div className="grid gap-4 md:grid-cols-[1fr_auto_1fr] md:items-end">
+                <div className="h-12 rounded-xl bg-zinc-900" />
+                <div className="hidden h-6 w-8 rounded bg-zinc-900 md:block mx-auto mb-3" />
+                <div className="h-12 rounded-xl bg-zinc-900" />
+              </div>
+              <div className="h-24 rounded-xl bg-zinc-900/60 mt-6" />
             </div>
           }
         >

@@ -49,12 +49,12 @@ export function ArticleCard({
         </Link>
         <div className="min-w-0 flex-1">
           <Badge tone={category.tone}>{category.name}</Badge>
-          <h3 className="mt-1.5 text-xs font-bold leading-snug text-zinc-100 transition-colors group-hover:text-red-400 sm:text-sm">
+          <h3 className="mt-1.5 text-base font-extrabold leading-[1.35] text-zinc-100 transition-colors group-hover:text-red-400 sm:text-lg">
             <Link href={href}>
               {article.title}
             </Link>
           </h3>
-          <p className="mt-2 text-[11px] text-zinc-400">
+          <p className="mt-2 text-xs font-semibold text-zinc-400">
             {formatDate(article.publishDate)} · {article.readTimeMinutes} min read
           </p>
         </div>
@@ -80,25 +80,25 @@ export function ArticleCard({
         />
         <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/40 via-transparent to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
       </Link>
-      <div className="flex flex-1 flex-col justify-between p-5">
+      <div className="flex flex-1 flex-col justify-between p-5 sm:p-6">
         <div>
-          <div className="mb-2.5">
+          <div className="mb-3">
             <Badge tone={category.tone}>{category.name}</Badge>
           </div>
-          <h3 className="text-base font-bold leading-snug tracking-tight text-white transition-colors group-hover:text-red-400 sm:text-lg">
+          <h3 className="text-lg font-black leading-[1.35] tracking-tight text-white transition-colors group-hover:text-red-400 sm:text-xl lg:text-[1.3rem]">
             <Link href={href}>
               {article.title}
             </Link>
           </h3>
           {variant === "guide" ? (
-            <p className="mt-2.5 text-xs leading-relaxed text-zinc-400 sm:text-sm">{article.excerpt}</p>
+            <p className="mt-3 text-sm sm:text-base leading-relaxed text-zinc-400">{article.excerpt}</p>
           ) : (
-            <p className="mt-2.5 line-clamp-2 text-xs leading-relaxed text-zinc-400 sm:text-sm">
+            <p className="mt-3 line-clamp-2 text-sm sm:text-base leading-relaxed text-zinc-400">
               {article.excerpt}
             </p>
           )}
         </div>
-        <div className="mt-4 flex items-center justify-between border-t border-zinc-800/60 pt-3.5 text-[11px] font-medium text-zinc-400">
+        <div className="mt-5 flex items-center justify-between border-t border-zinc-800/60 pt-4 text-xs sm:text-sm font-semibold text-zinc-400">
           <span>{formatDate(article.publishDate)}</span>
           <span>{article.readTimeMinutes} min read</span>
         </div>

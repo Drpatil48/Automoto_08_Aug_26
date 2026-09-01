@@ -299,13 +299,17 @@ export const VEHICLES: VehicleSpec[] = [
   },
 ];
 
+const VEHICLES_BY_ID = new Map<string, VehicleSpec>(
+  VEHICLES.map((vehicle) => [vehicle.id.toLowerCase(), vehicle]),
+);
+
 export function getAllVehicles(): VehicleSpec[] {
   return VEHICLES;
 }
 
 export function getVehicleById(id: string): VehicleSpec | null {
   const cleanId = id.trim().toLowerCase();
-  return VEHICLES.find((vehicle) => vehicle.id.toLowerCase() === cleanId) ?? null;
+  return VEHICLES_BY_ID.get(cleanId) ?? null;
 }
 
 export function getVehiclesByIds(ids: string[]): VehicleSpec[] {

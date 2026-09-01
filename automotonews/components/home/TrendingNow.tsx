@@ -58,7 +58,7 @@ export function TrendingNow({ articles }: TrendingNowProps) {
               >
                 <div>
                   <div className="flex items-center justify-between gap-2">
-                    <span className="text-2xl font-black italic tracking-tighter text-zinc-700 transition-colors group-hover:text-red-500">
+                    <span className="text-2xl font-black italic tracking-tighter text-zinc-500 transition-colors group-hover:text-red-500">
                       0{index + 1}
                     </span>
                     <Badge tone={category.tone}>{category.name}</Badge>

@@ -1,17 +1,33 @@
 @import "tailwindcss";
 
 :root {
-  --background: #111111;
+  --background: #09090b;
   --foreground: #f4f4f5;
   --muted: #a1a1aa;
   --surface: #18181b;
   --surface-hover: #27272a;
   --border: #27272a;
-  --accent: #c1121f;
-  --accent-dark: #9b0e18;
+  --accent: #dc2626;
+  --accent-dark: #b91c1c;
   --header: #09090b;
   --header-text: #fafafa;
   --focus: #3b82f6;
+  color-scheme: dark;
+}
+
+html.light {
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  --muted: #475569;
+  --surface: #ffffff;
+  --surface-hover: #f1f5f9;
+  --border: #e2e8f0;
+  --accent: #dc2626;
+  --accent-dark: #b91c1c;
+  --header: #ffffff;
+  --header-text: #0f172a;
+  --focus: #2563eb;
+  color-scheme: light;
 }
 
 @theme inline {
@@ -25,8 +41,8 @@
   --color-accent-dark: var(--accent-dark);
   --color-header: var(--header);
   --color-header-text: var(--header-text);
-  --font-sans: var(--font-latin), var(--font-devanagari), ui-sans-serif, system-ui,
-    sans-serif;
+  --font-sans: var(--font-devanagari), var(--font-latin), -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -47,6 +63,159 @@ body {
   text-rendering: optimizeLegibility;
   overflow-wrap: anywhere;
   word-break: break-word;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* ==========================================================================
+   LIGHT MODE DESIGN SYSTEM OVERRIDES
+   ========================================================================== */
+
+/* Backgrounds & Surfaces */
+html.light body {
+  background-color: #f8fafc;
+  color: #0f172a;
+}
+
+html.light header {
+  background-color: rgba(255, 255, 255, 0.92) !important;
+  color: #0f172a !important;
+  border-color: #e2e8f0 !important;
+}
+
+html.light header .bg-zinc-950\/80,
+html.light header .bg-zinc-950\/90 {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  border-color: #e2e8f0 !important;
+}
+
+html.light .bg-zinc-950,
+html.light .bg-zinc-950\/60,
+html.light .bg-zinc-950\/70,
+html.light .bg-zinc-950\/80,
+html.light .bg-zinc-950\/90,
+html.light .bg-zinc-950\/96 {
+  background-color: #ffffff !important;
+}
+
+html.light .bg-zinc-900,
+html.light .bg-zinc-900\/40,
+html.light .bg-zinc-900\/50,
+html.light .bg-zinc-900\/60,
+html.light .bg-zinc-900\/70,
+html.light .bg-zinc-900\/80,
+html.light .bg-zinc-900\/90 {
+  background-color: #f8fafc !important;
+}
+
+html.light .bg-zinc-800,
+html.light .bg-zinc-800\/60,
+html.light .bg-zinc-800\/80,
+html.light .bg-zinc-800\/90 {
+  background-color: #f1f5f9 !important;
+}
+
+/* Borders */
+html.light .border-zinc-800,
+html.light .border-zinc-800\/40,
+html.light .border-zinc-800\/60,
+html.light .border-zinc-800\/80,
+html.light .divide-zinc-800\/60 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #e2e8f0 !important;
+}
+
+html.light .border-zinc-700 {
+  border-color: #cbd5e1 !important;
+}
+
+/* Typography & Contrast */
+html.light .text-white,
+html.light .text-zinc-100 {
+  color: #0f172a !important;
+}
+
+html.light .text-zinc-200,
+html.light .text-zinc-300 {
+  color: #1e293b !important;
+}
+
+html.light .text-zinc-400 {
+  color: #475569 !important;
+}
+
+html.light .text-zinc-500 {
+  color: #64748b !important;
+}
+
+/* Inputs, Selects & Forms */
+html.light input[type="text"],
+html.light input[type="email"],
+html.light input[type="search"],
+html.light select {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}
+
+html.light input::placeholder {
+  color: #94a3b8 !important;
+}
+
+html.light select option {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+}
+
+/* Cards & Elevated Containers */
+html.light .shadow-xl,
+html.light .shadow-2xl {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Mobile Navigation Drawer */
+html.light div[aria-label="Mobile Navigation Drawer"] {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+}
+
+html.light div[aria-label="Mobile article quick actions"] {
+  background-color: rgba(255, 255, 255, 0.96) !important;
+  border-color: #e2e8f0 !important;
+}
+
+/* Badges & Tags */
+html.light .bg-red-950\/80 {
+  background-color: #fee2e2 !important;
+  border-color: #fca5a5 !important;
+}
+
+html.light .text-red-400 {
+  color: #dc2626 !important;
+}
+
+html.light .bg-amber-950\/80 {
+  background-color: #fef3c7 !important;
+  border-color: #fcd34d !important;
+}
+
+html.light .text-amber-400 {
+  color: #d97706 !important;
+}
+
+/* Tables & Comparison Tool */
+html.light table th {
+  background-color: #f1f5f9 !important;
+  color: #0f172a !important;
+  border-color: #e2e8f0 !important;
+}
+
+html.light table td {
+  border-color: #e2e8f0 !important;
+}
+
+/* Ad slots in light mode */
+html.light .ad-slot {
+  background: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
 }
 
 /* Reserve space when compare tray is open (above mobile anchor on small screens) */
@@ -94,30 +263,53 @@ body:has([data-compare-tray]) {
   overflow: hidden;
 }
 
+.article-body {
+  font-size: 1.2rem;
+  line-height: 1.9;
+  letter-spacing: -0.005em;
+  color: var(--foreground);
+}
+
 .article-body > *:first-child {
   margin-top: 0;
 }
 
-.article-body p,
-.article-body ul,
-.article-body ol,
-.article-body blockquote,
-.article-body figure {
-  margin: 1.1rem 0;
+.article-body p {
+  margin: 1.6rem 0;
+  font-size: 1.2rem;
+  line-height: 1.9;
 }
 
-.article-body h2,
-.article-body h3,
-.article-body h4 {
-  margin: 1.75rem 0 0.75rem;
-  font-weight: 700;
+.article-body h2 {
+  margin: 2.5rem 0 1.15rem;
+  font-size: 1.75rem;
+  font-weight: 900;
   line-height: 1.3;
+  letter-spacing: -0.015em;
+  color: var(--foreground);
+}
+
+.article-body h3 {
+  margin: 2rem 0 1rem;
+  font-size: 1.45rem;
+  font-weight: 800;
+  line-height: 1.35;
+  color: var(--foreground);
+}
+
+.article-body h4 {
+  margin: 1.75rem 0 0.85rem;
+  font-size: 1.25rem;
+  font-weight: 800;
+  line-height: 1.4;
+  color: var(--foreground);
 }
 
 .article-body a {
   color: var(--accent);
   text-decoration: underline;
-  text-underline-offset: 2px;
+  text-underline-offset: 4px;
+  font-weight: 700;
 }
 
 .article-body img,
@@ -126,49 +318,58 @@ body:has([data-compare-tray]) {
 .article-body video {
   height: auto;
   max-width: 100%;
-  border-radius: 0.75rem;
+  border-radius: 0.875rem;
 }
 
 .article-body table {
   display: block;
   width: 100%;
   overflow-x: auto;
+  font-size: 1.05rem;
+  line-height: 1.7;
 }
 
 .article-body ul,
 .article-body ol {
-  padding-left: 1.25rem;
+  margin: 1.5rem 0;
+  padding-left: 1.75rem;
+  font-size: 1.2rem;
+  line-height: 1.9;
 }
 
 .article-body li {
-  margin: 0.35rem 0;
+  margin: 0.65rem 0;
 }
 
 .article-body .cms-form-notice {
-  margin: 1.5rem 0;
+  margin: 2rem 0;
   border: 1px solid var(--border);
-  border-radius: 0.75rem;
+  border-radius: 0.875rem;
   background: color-mix(in srgb, var(--surface) 85%, var(--border));
-  padding: 1rem 1.15rem;
+  padding: 1.35rem 1.5rem;
 }
 
 .article-body .cms-form-notice p {
   margin: 0;
   color: var(--muted);
-  font-size: 0.95rem;
-  line-height: 1.6;
+  font-size: 1.05rem;
+  line-height: 1.75;
 }
 
 .article-body .cms-form-notice a {
   color: var(--foreground);
-  font-weight: 600;
+  font-weight: 700;
   text-decoration: underline;
-  text-underline-offset: 3px;
+  text-underline-offset: 4px;
 }
 
 .article-body blockquote {
-  border-left: 3px solid var(--accent);
-  padding-left: 1rem;
+  border-left: 4px solid var(--accent);
+  padding: 0.65rem 0 0.65rem 1.5rem;
+  margin: 2rem 0;
+  font-size: 1.25rem;
+  font-style: italic;
+  line-height: 1.85;
   color: var(--muted);
 }
 

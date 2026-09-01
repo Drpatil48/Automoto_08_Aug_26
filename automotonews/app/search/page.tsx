@@ -90,7 +90,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   const { q, page: pageParam } = await searchParams;
   const query = q?.trim() ?? "";
   const page = Math.max(1, Number(pageParam ?? "1") || 1);
-  const { articles, total, totalPages, error, source } = await loadResults(
+  const { articles, total, totalPages, error } = await loadResults(
     query,
     page,
   );

@@ -1,51 +1,70 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 
 export type FontSizeLevel = "sm" | "base" | "lg" | "xl";
 
-export function FontResizer() {
-  const [size, setSize] = useState<FontSizeLevel>("base");
+function applyFontSize(newSize: FontSizeLevel) {
+  const el = document.querySelector(".article-body");
+  if (!el) return;
 
-  useEffect(() => {
+  el.classList.remove(
+    "text-base",
+    "text-lg",
+    "text-xl",
+    "text-2xl",
+    "text-[1.05rem]",
+    "text-[1.2rem]",
+    "leading-7",
+    "leading-8",
+    "leading-9",
+    "leading-[1.85]",
+    "leading-[1.9]",
+  );
+
+  switch (newSize) {
+    case "sm":
+      el.classList.add("text-base", "leading-7");
+      break;
+    case "base":
+      el.classList.add("text-[1.2rem]", "leading-[1.9]");
+      break;
+    case "lg":
+      el.classList.add("text-xl", "leading-[1.9]");
+      break;
+    case "xl":
+      el.classList.add("text-2xl", "leading-[1.95]");
+      break;
+  }
+}
+
+function subscribe(callback: () => void) {
+  window.addEventListener("storage", callback);
+  return () => window.removeEventListener("storage", callback);
+}
+
+function getSnapshot(): FontSizeLevel {
+  try {
     const saved = localStorage.getItem("article_font_size") as FontSizeLevel;
     if (saved && ["sm", "base", "lg", "xl"].includes(saved)) {
-      setSize(saved);
-      applyFontSize(saved);
+      return saved;
     }
-  }, []);
+  } catch {}
+  return "base";
+}
 
-  function applyFontSize(newSize: FontSizeLevel) {
-    const el = document.querySelector(".article-body");
-    if (!el) return;
+function getServerSnapshot(): FontSizeLevel {
+  return "base";
+}
 
-    el.classList.remove(
-      "text-sm",
-      "text-base",
-      "text-lg",
-      "text-xl",
-      "text-[1.05rem]",
-    );
-
-    switch (newSize) {
-      case "sm":
-        el.classList.add("text-sm", "leading-6");
-        break;
-      case "base":
-        el.classList.add("text-[1.05rem]", "leading-8");
-        break;
-      case "lg":
-        el.classList.add("text-lg", "leading-8");
-        break;
-      case "xl":
-        el.classList.add("text-xl", "leading-9");
-        break;
-    }
-  }
+export function FontResizer() {
+  const size = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 
   function handleSizeChange(newSize: FontSizeLevel) {
-    setSize(newSize);
-    localStorage.setItem("article_font_size", newSize);
+    try {
+      localStorage.setItem("article_font_size", newSize);
+      window.dispatchEvent(new Event("storage"));
+    } catch {}
     applyFontSize(newSize);
   }
 

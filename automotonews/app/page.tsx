@@ -80,27 +80,18 @@ export default async function HomePage() {
     );
   }
 
-  let latest: Article[] = [];
-  let latestError: string | null = null;
-
-  try {
-    latest = await getLatestArticles(8);
-  } catch (error) {
-    latestError =
-      error instanceof CmsRequestError
-        ? error.message
-        : "Failed to load latest articles from WordPress.";
-  }
-
-  const featured = latest[0] ?? null;
-  const topStories = latest.slice(1, 5);
-
-  const [evRail, carRail, bikeRail, guideRail] = await Promise.all([
+  const [latestResult, evRail, carRail, bikeRail, guideRail] = await Promise.all([
+    getLatestArticles(8).catch((error) => {
+      const message =
+        error instanceof CmsRequestError
+          ? error.message
+          : "Failed to load latest articles from WordPress.";
+      return { error: message, articles: [] as Article[] };
+    }),
     loadCategoryRail(
       "electric-vehicles-evs",
       "EV Spotlight",
       "Charging, battery health, range, and the latest EV launches.",
-      featured?.slug,
     ),
     loadCategoryRail(
       "car-news",
@@ -118,6 +109,11 @@ export default async function HomePage() {
       "Tech explainers and practical automotive guidance.",
     ),
   ]);
+
+  const latest = Array.isArray(latestResult) ? latestResult : latestResult.articles;
+  const latestError = Array.isArray(latestResult) ? null : latestResult.error;
+  const featured = latest[0] ?? null;
+  const topStories = latest.slice(1, 5);
 
   return (
     <>

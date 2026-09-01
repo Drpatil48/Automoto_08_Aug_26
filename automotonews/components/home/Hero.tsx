@@ -46,29 +46,29 @@ export function Hero({ article }: HeroProps) {
             <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/20 to-transparent lg:hidden" />
           </Link>
 
-          <div className="flex flex-col justify-center lg:col-span-5 lg:pl-4">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="rounded-full bg-red-950/80 border border-red-800/60 px-3 py-1 text-[11px] font-black uppercase tracking-wider text-red-400">
+          <div className="flex flex-col justify-center lg:col-span-5 lg:pl-6">
+            <div className="flex flex-wrap items-center gap-2.5">
+              <span className="rounded-full bg-red-950/80 border border-red-800/60 px-3.5 py-1 text-xs font-black uppercase tracking-wider text-red-400">
                 FEATURED STORY
               </span>
-              <span className="text-xs text-zinc-400 font-medium">• मराठीत ताज्या बातम्या</span>
+              <span className="text-sm text-zinc-400 font-medium">• मराठीत ताज्या बातम्या</span>
             </div>
-            <div className="mt-3">
+            <div className="mt-3.5">
               <Badge tone={category.tone}>{category.name}</Badge>
             </div>
             <h1
               id="hero-heading"
-              className="mt-3 text-2xl font-black leading-tight tracking-tight text-white sm:text-3xl lg:text-4xl"
+              className="mt-3 text-2xl font-black leading-[1.25] tracking-tight text-white sm:text-3xl lg:text-[2.5rem]"
             >
               <Link href={href} className="transition-colors hover:text-red-500">
                 {article.title}
               </Link>
             </h1>
-            <p className="mt-4 text-sm leading-relaxed text-zinc-400 sm:text-base">
+            <p className="mt-4 text-base leading-relaxed text-zinc-300 sm:text-lg">
               {article.excerpt}
             </p>
-            <div className="mt-5 flex items-center gap-3 text-xs text-zinc-400 border-t border-zinc-800/60 pt-4">
-              <span className="font-semibold text-zinc-300">{article.author.name}</span>
+            <div className="mt-5 flex items-center gap-3 text-xs sm:text-sm font-semibold text-zinc-400 border-t border-zinc-800/60 pt-4">
+              <span className="font-bold text-zinc-200">{article.author.name}</span>
               <span>•</span>
               <span>{formatDate(article.publishDate)}</span>
               <span>•</span>
@@ -77,7 +77,7 @@ export function Hero({ article }: HeroProps) {
             <div className="mt-6">
               <Link
                 href={href}
-                className="inline-flex items-center justify-center rounded-xl bg-red-600 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-red-950/40 transition-all hover:bg-red-500 hover:shadow-red-900/60 hover:scale-[1.02]"
+                className="inline-flex items-center justify-center rounded-xl bg-red-600 px-7 py-3.5 text-base font-bold text-white shadow-lg shadow-red-950/40 transition-all hover:bg-red-500 hover:shadow-red-900/60 hover:scale-[1.02]"
               >
                 संपूर्ण बातमी वाचा →
               </Link>

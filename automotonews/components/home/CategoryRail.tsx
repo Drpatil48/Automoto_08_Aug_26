@@ -8,22 +8,22 @@ type CategoryRailProps = {
   sectionId: string;
 };
 
+const SECTION_ICON_MAP: Record<string, string> = {
+  ev: "⚡ ",
+  cars: "🚗 ",
+  "car-news": "🚗 ",
+  bikes: "🏍️ ",
+  sportsbikes: "🏍️ ",
+  guides: "💡 ",
+  "auto-technology": "💡 ",
+};
+
 export function CategoryRail({
   category,
   articles,
   sectionId,
 }: CategoryRailProps) {
-  const sectionIconMap: Record<string, string> = {
-    ev: "⚡ ",
-    cars: "🚗 ",
-    "car-news": "🚗 ",
-    bikes: "🏍️ ",
-    sportsbikes: "🏍️ ",
-    guides: "💡 ",
-    "auto-technology": "💡 ",
-  };
-
-  const titleWithIcon = `${sectionIconMap[sectionId] ?? ""}${category.name}`;
+  const titleWithIcon = `${SECTION_ICON_MAP[sectionId] ?? ""}${category.name}`;
   const headingId = `${sectionId}-heading`;
 
   return (

@@ -30,8 +30,6 @@ const latin = Inter({
 const devanagari = Noto_Sans_Devanagari({
   variable: "--font-devanagari",
   subsets: ["devanagari"],
-  // Variable font when available — fewer bytes than discrete 400–700 files.
-  weight: ["400", "500", "600", "700"],
   display: "swap",
   preload: true,
   adjustFontFallback: true,
@@ -81,10 +79,15 @@ export default function RootLayout({
   const hasMobileAnchorAd = canRenderLiveAd("mobileAnchor");
 
   return (
-    <html lang="mr" className={`${latin.variable} ${devanagari.variable} h-full`}>
+    <html lang="mr" className={`${latin.variable} ${devanagari.variable} light h-full`}>
       <head>
         <link rel="preconnect" href="https://cms.automotonews.in" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://cms.automotonews.in" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var s=localStorage.getItem('automotonews-theme');if(s==='dark'){document.documentElement.classList.add('dark');document.documentElement.classList.remove('light')}else{document.documentElement.classList.add('light');document.documentElement.classList.remove('dark')}}catch(e){}})()`,
+          }}
+        />
       </head>
       <body
         className={`flex min-h-full flex-col antialiased ${

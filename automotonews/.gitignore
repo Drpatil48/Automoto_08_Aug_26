@@ -12,6 +12,10 @@
 
 # testing
 /coverage
+/test-results/
+/playwright-report/
+/.lighthouse-audit*.json
+/.lh-*.json
 
 # next.js
 /.next/

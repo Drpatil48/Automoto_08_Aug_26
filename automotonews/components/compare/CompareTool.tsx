@@ -9,7 +9,7 @@ import { VehicleSelector } from "@/components/compare/VehicleSelector";
 import { useCompareTray } from "@/components/compare/CompareTrayProvider";
 import type { VehicleCategory, VehicleSpec } from "@/lib/types";
 import {
-  canCompare,
+  getVehicleById,
   getVehicleCategory,
   validateComparison,
   vehicleLabel,
@@ -64,28 +64,16 @@ export function CompareTool({
     [modelA, modelB],
   );
 
-  // Filter vehicles for Selector A
-  const vehiclesForA = useMemo(() => {
-    let list = vehicles;
-    if (activeCategoryMode) {
-      list = list.filter((v) => getVehicleCategory(v) === activeCategoryMode);
-    }
-    return list;
-  }, [activeCategoryMode, vehicles]);
-
-  // Filter vehicles for Selector B
-  const vehiclesForB = useMemo(() => {
-    let list = vehicles;
-    if (activeCategoryMode) {
-      list = list.filter((v) => getVehicleCategory(v) === activeCategoryMode);
-    }
-    return list;
+  // Filter vehicles based on active category mode
+  const selectableVehicles = useMemo(() => {
+    if (!activeCategoryMode) return vehicles;
+    return vehicles.filter((v) => getVehicleCategory(v) === activeCategoryMode);
   }, [activeCategoryMode, vehicles]);
 
   function handleSelectA(id: string) {
     setModelA(id);
     if (id) {
-      const newA = vehicles.find((v) => v.id === id);
+      const newA = getVehicleById(id);
       if (newA && selected.b && getVehicleCategory(newA) !== getVehicleCategory(selected.b)) {
         setModelB("");
       }
@@ -95,7 +83,7 @@ export function CompareTool({
   function handleSelectB(id: string) {
     setModelB(id);
     if (id) {
-      const newB = vehicles.find((v) => v.id === id);
+      const newB = getVehicleById(id);
       if (newB && selected.a && getVehicleCategory(newB) !== getVehicleCategory(selected.a)) {
         setModelA("");
       }
@@ -174,7 +162,7 @@ export function CompareTool({
               ? `Vehicle A (${activeCategoryMode === "bike" ? "बाईक निवडा" : "कार निवडा"})`
               : "Vehicle A (पहिलं वाहन)"
           }
-          vehicles={vehiclesForA}
+          vehicles={selectableVehicles}
           value={modelA}
           excludeId={modelB || undefined}
           category={activeCategoryMode || undefined}
@@ -190,7 +178,7 @@ export function CompareTool({
               ? `Vehicle B (${activeCategoryMode === "bike" ? "बाईक निवडा" : "कार निवडा"})`
               : "Vehicle B (दुसरं वाहन)"
           }
-          vehicles={vehiclesForB}
+          vehicles={selectableVehicles}
           value={modelB}
           excludeId={modelA || undefined}
           category={activeCategoryMode || undefined}
@@ -248,7 +236,7 @@ export function CompareTool({
             </div>
           </div>
         ) : !selected.a && !selected.b ? (
-          <p className="rounded-xl border border-dashed border-zinc-800 bg-zinc-900/40 p-6 text-center text-xs font-medium text-zinc-400">
+          <p className="rounded-2xl border border-dashed border-zinc-800 bg-zinc-900/40 p-8 text-center text-sm sm:text-base font-semibold text-zinc-300">
             तुलना करण्यासाठी दोन वाहने निवडा (Select two cars or two bikes to compare price, mileage/range, and key specs).
           </p>
         ) : !validation.isValid ? (

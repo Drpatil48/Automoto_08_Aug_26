@@ -1,5 +1,4 @@
 import type { MetadataRoute } from "next";
-import { FOOTER_NAV, PRIMARY_NAV } from "@/lib/constants";
 import {
   getArticlesForSitemap,
   getCategories,
@@ -11,26 +10,48 @@ export const revalidate = 3600;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
-  // Intentionally omit /search — robots.txt disallows it and search pages are noindex.
-  const staticPaths = new Set<string>([
-    "/",
+  const categoryPaths = new Set([
+    "/electric-vehicles-evs",
+    "/car-news",
+    "/sportsbikes",
+    "/upcoming-cars",
+    "/auto-technology",
     "/compare",
+  ]);
+
+  const legalPaths = new Set([
     "/about-us",
     "/privacy-policy",
     "/disclaimer",
     "/contact",
   ]);
 
-  for (const item of [...PRIMARY_NAV, ...FOOTER_NAV]) {
-    if (item.href !== "/") staticPaths.add(item.href);
+  const entries: MetadataRoute.Sitemap = [
+    {
+      url: absoluteUrl("/"),
+      lastModified: now,
+      changeFrequency: "daily",
+      priority: 1.0,
+    },
+  ];
+
+  for (const path of categoryPaths) {
+    entries.push({
+      url: absoluteUrl(path),
+      lastModified: now,
+      changeFrequency: "daily",
+      priority: 0.8,
+    });
   }
 
-  const entries: MetadataRoute.Sitemap = [...staticPaths].map((path) => ({
-    url: absoluteUrl(path),
-    lastModified: now,
-    changeFrequency: path === "/" ? "hourly" : "weekly",
-    priority: path === "/" ? 1 : 0.6,
-  }));
+  for (const path of legalPaths) {
+    entries.push({
+      url: absoluteUrl(path),
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.5,
+    });
+  }
 
   if (!isCmsConfigured()) {
     return entries;
@@ -39,12 +60,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   try {
     const categories = await getCategories();
     for (const category of categories) {
-      entries.push({
-        url: absoluteUrl(`/${category.slug}`),
-        lastModified: now,
-        changeFrequency: "daily",
-        priority: 0.7,
-      });
+      const catUrl = absoluteUrl(`/${category.slug}`);
+      if (!entries.some((e) => e.url === catUrl)) {
+        entries.push({
+          url: catUrl,
+          lastModified: now,
+          changeFrequency: "daily",
+          priority: 0.8,
+        });
+      }
     }
 
     const articles = await getArticlesForSitemap();

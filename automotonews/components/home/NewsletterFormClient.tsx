@@ -83,18 +83,18 @@ export function NewsletterFormClient() {
           value={email}
           onChange={(event) => setEmail(event.target.value)}
           placeholder="Enter your email address"
-          className="min-h-12 w-full flex-1 rounded-xl border border-zinc-800 bg-zinc-950 px-4 text-sm text-zinc-100 placeholder-zinc-500 focus:border-red-600 focus:outline-none disabled:opacity-60"
+          className="min-h-12 w-full flex-1 rounded-xl border border-zinc-800 bg-zinc-950 px-4 text-base text-zinc-100 placeholder-zinc-500 focus:border-red-600 focus:outline-none disabled:opacity-60"
         />
         <button
           type="submit"
           disabled={loading}
-          className="inline-flex min-h-12 items-center justify-center rounded-xl bg-red-600 px-6 text-sm font-bold text-white transition-all hover:bg-red-500 hover:shadow-lg hover:shadow-red-950/40 disabled:opacity-60 shrink-0"
+          className="inline-flex min-h-12 items-center justify-center rounded-xl bg-red-600 px-7 text-base font-bold text-white transition-all hover:bg-red-500 hover:shadow-lg hover:shadow-red-950/40 disabled:opacity-60 shrink-0"
         >
           {loading ? "Subscribing..." : "Subscribe Now"}
         </button>
       </div>
 
-      <label className="mt-4 flex items-start gap-3 text-xs leading-relaxed text-zinc-400">
+      <label className="mt-4 flex items-start gap-3 text-xs sm:text-sm leading-relaxed text-zinc-300">
         <input
           type="checkbox"
           name="consent"
@@ -108,7 +108,7 @@ export function NewsletterFormClient() {
           I agree to receive daily email updates and understand I can unsubscribe anytime. Read our{" "}
           <Link
             href="/privacy-policy"
-            className="font-medium text-zinc-200 underline underline-offset-4 hover:text-white"
+            className="font-semibold text-zinc-100 underline underline-offset-4 hover:text-white"
           >
             Privacy Policy
           </Link>
@@ -118,12 +118,12 @@ export function NewsletterFormClient() {
 
       {message ? (
         <p
-          className={`mt-4 text-xs ${
+          className={`mt-4 text-sm font-semibold ${
             tone === "error"
-              ? "text-red-400 font-semibold"
+              ? "text-red-400"
               : tone === "success"
-                ? "text-emerald-400 font-medium"
-                : "text-zinc-300"
+                ? "text-emerald-400"
+                : "text-zinc-200"
           }`}
           role="status"
         >

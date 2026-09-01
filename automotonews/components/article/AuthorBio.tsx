@@ -45,11 +45,11 @@ export function AuthorBio({ author }: AuthorBioProps) {
               Verified Automotive Editor
             </span>
           </div>
-          <h2 className="mt-1 text-lg font-extrabold text-white">{author.name}</h2>
+          <h2 className="mt-1.5 text-xl font-black text-white">{author.name}</h2>
           {author.bio ? (
-            <p className="mt-2 text-xs sm:text-sm leading-relaxed text-zinc-400">{author.bio}</p>
+            <p className="mt-2.5 text-sm sm:text-base leading-relaxed text-zinc-300">{author.bio}</p>
           ) : (
-            <p className="mt-1 text-xs text-zinc-400">
+            <p className="mt-2 text-sm text-zinc-300">
               Editorial team member covering Indian car, bike, and EV developments with factual verification.
             </p>
           )}

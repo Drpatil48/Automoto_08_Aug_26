@@ -119,14 +119,16 @@ function replaceNonFunctionalWpForms(html: string): string {
     .replace(/<form[^>]*\bwpcf7-form\b[^>]*>[\s\S]*?<\/form>/gi, notice);
 }
 
-/** Remove executable markup while keeping editorial HTML structure. */
+/** Remove executable markup while keeping editorial HTML structure; demote embedded <h1> to <h2> to maintain single H1 hierarchy. */
 export function sanitizeWpHtml(html: string): string {
   return replaceNonFunctionalWpForms(html)
     .replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, "")
     .replace(/<iframe[\s\S]*?>[\s\S]*?<\/iframe>/gi, "")
     .replace(/\son\w+="[^"]*"/gi, "")
     .replace(/\son\w+='[^']*'/gi, "")
-    .replace(/javascript:/gi, "");
+    .replace(/javascript:/gi, "")
+    .replace(/<h1(\b[^>]*)>/gi, "<h2$1>")
+    .replace(/<\/h1>/gi, "</h2>");
 }
 
 export function estimateReadTimeMinutes(htmlOrText: string): number {

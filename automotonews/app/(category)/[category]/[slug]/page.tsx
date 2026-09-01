@@ -3,7 +3,6 @@ import Link from "next/link";
 import { notFound, permanentRedirect } from "next/navigation";
 import { ArticleBodyWithAds } from "@/components/ads/ArticleBodyWithAds";
 import { SidebarAd } from "@/components/ads/SidebarAd";
-import { ArticleAudioPlayer } from "@/components/article/ArticleAudioPlayer";
 import { AuthorBio } from "@/components/article/AuthorBio";
 import { Breadcrumbs } from "@/components/article/Breadcrumbs";
 import { FontResizer } from "@/components/article/FontResizer";
@@ -27,7 +26,9 @@ import {
   buildArticleJsonLd,
   buildArticleMetadata,
   buildBreadcrumbJsonLd,
+  buildFaqJsonLd,
   buildPageMetadata,
+  extractFaqsFromHtml,
 } from "@/lib/seo";
 import type { Article } from "@/lib/types";
 
@@ -139,6 +140,9 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   const imageSrc = article.coverImage;
   const pageUrl = `https://automotonews.in/${article.category}/${article.slug}`;
 
+  const faqs = extractFaqsFromHtml(article.body);
+  const faqJsonLd = buildFaqJsonLd(faqs);
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:py-12">
       <ReadingProgressBar />
@@ -153,6 +157,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             },
           ]),
           buildArticleJsonLd(article),
+          faqJsonLd,
         ]}
       />
 
@@ -171,11 +176,11 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
               <Badge tone={category.tone}>{category.name}</Badge>
               <FontResizer />
             </div>
-            <h1 className="mt-3 text-2xl font-black leading-tight tracking-tight text-white sm:text-4xl">
+            <h1 className="mt-3.5 text-2xl font-black leading-[1.25] tracking-tight text-white sm:text-4xl lg:text-[2.6rem]">
               {article.title}
             </h1>
-            <p className="mt-4 text-xs font-medium text-zinc-400">
-              {article.author.name} · {formatDate(article.publishDate)}
+            <p className="mt-4 text-xs sm:text-sm font-semibold text-zinc-400">
+              <span className="text-zinc-200">{article.author.name}</span> · {formatDate(article.publishDate)}
               {article.updatedDate !== article.publishDate
                 ? ` · Updated ${formatDate(article.updatedDate)}`
                 : ""}
@@ -187,7 +192,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                 {article.tags.map((tag) => (
                   <li
                     key={tag}
-                    className="rounded-lg border border-zinc-800 bg-zinc-900 px-3 py-1 text-xs font-semibold text-zinc-300"
+                    className="rounded-lg border border-zinc-800 bg-zinc-900 px-3.5 py-1 text-xs sm:text-sm font-bold text-zinc-300"
                   >
                     #{tag}
                   </li>
@@ -209,9 +214,6 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
               />
             </div>
           ) : null}
-
-          {/* Audio News Reader (Wegwan News inspired TTS feature) */}
-          <ArticleAudioPlayer title={article.title} body={article.body} />
 
           {article.excerpt ? <QuickSummaryBox summary={article.excerpt} /> : null}
 

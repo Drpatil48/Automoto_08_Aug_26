@@ -2,22 +2,23 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useId, useState } from "react";
+import { useEffect, useId, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import { PRIMARY_NAV, UTILITY_NAV } from "@/lib/constants";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
 
-
+const emptySubscribe = () => () => {};
 
 export function MobileNav() {
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [mounted, setMounted] = useState(false);
+  const mounted = useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false,
+  );
   const router = useRouter();
   const panelId = useId();
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   useEffect(() => {
     if (!open) return;
@@ -62,14 +63,17 @@ export function MobileNav() {
               <span className="text-xs text-zinc-400 font-normal ml-0.5">.in</span>
             </span>
           </div>
-          <button
-            type="button"
-            onClick={() => setOpen(false)}
-            className="flex size-10 items-center justify-center rounded-full bg-zinc-900 border border-zinc-800 text-zinc-300 transition-colors hover:bg-zinc-800 hover:text-white"
-            aria-label="Close menu"
-          >
-            ✕
-          </button>
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <button
+              type="button"
+              onClick={() => setOpen(false)}
+              className="flex size-10 items-center justify-center rounded-full bg-zinc-900 border border-zinc-800 text-zinc-300 transition-colors hover:bg-zinc-800 hover:text-white"
+              aria-label="Close menu"
+            >
+              ✕
+            </button>
+          </div>
         </div>
 
         {/* Embedded Search Input Bar */}
@@ -225,10 +229,10 @@ export function MobileNav() {
   ) : null;
 
   return (
-    <div className="md:hidden">
+    <div className="flex shrink-0 md:hidden">
       <button
         type="button"
-        className="inline-flex size-10 items-center justify-center rounded-full border border-zinc-800 bg-zinc-900/80 text-zinc-200 transition-colors hover:border-red-600/50 hover:text-white"
+        className="inline-flex size-9 sm:size-10 shrink-0 items-center justify-center rounded-full border border-zinc-800 bg-zinc-900/80 text-zinc-200 transition-colors hover:border-red-600/50 hover:text-white"
         aria-expanded={open}
         aria-controls={panelId}
         aria-label={open ? "Close menu" : "Open menu"}
